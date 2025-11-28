@@ -1,0 +1,390 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Track, Car, LapTime } from '../types';
+import { CARS } from '../constants';
+import { fetchLapTimes } from '../services/storageService';
+import TrackGuide from './TrackGuide';
+import Button from './Button';
+
+interface LeaderboardProps {
+  selectedTrack: Track;
+  currentUser: string | undefined;
+}
+
+const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser }) => {
+  const [times, setTimes] = useState<LapTime[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filterClass, setFilterClass] = useState<string>('ALL');
+  const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
+  
+  // Sticky User Row State
+  const [stickyState, setStickyState] = useState<'top' | 'bottom' | null>(null);
+
+  useEffect(() => {
+    // Load times initially and whenever track changes
+    const loadData = async () => {
+      setIsLoading(true);
+      const loadedTimes = await fetchLapTimes(selectedTrack.id);
+      setTimes(loadedTimes);
+      setIsLoading(false);
+      setSelectedDriver(null); // Reset detail view on track change
+      setStickyState(null);
+    };
+    loadData();
+  }, [selectedTrack]);
+
+  const getCarName = (carId: string) => {
+    const car = CARS.find(c => c.id === carId);
+    return car ? `${car.brand} ${car.name}` : carId;
+  };
+  
+  const getCarClass = (carId: string) => {
+    return CARS.find(c => c.id === carId)?.class || 'GT3';
+  };
+
+  // 1. Filter raw times by selected class (if not ALL)
+  const classFilteredTimes = useMemo(() => {
+    return filterClass === 'ALL' 
+      ? times 
+      : times.filter(t => getCarClass(t.carId) === filterClass);
+  }, [times, filterClass]);
+
+  // 2. LEVEL 1 DATA: Group by User, keeping only their BEST time
+  const uniqueDriverTimes = useMemo(() => {
+    const bestTimesMap = new Map<string, LapTime>();
+
+    classFilteredTimes.forEach(time => {
+      const existing = bestTimesMap.get(time.username);
+      if (!existing || time.totalMilliseconds < existing.totalMilliseconds) {
+        bestTimesMap.set(time.username, time);
+      }
+    });
+
+    return Array.from(bestTimesMap.values()).sort((a, b) => a.totalMilliseconds - b.totalMilliseconds);
+  }, [classFilteredTimes]);
+
+  // 3. LEVEL 2 DATA: Get all times for the selected driver (on this track)
+  const selectedDriverTimes = useMemo(() => {
+    if (!selectedDriver) return [];
+    return times
+      .filter(t => t.username === selectedDriver)
+      .sort((a, b) => a.totalMilliseconds - b.totalMilliseconds);
+  }, [times, selectedDriver]);
+
+  // Find User's stats for sticky row
+  const currentUserStats = useMemo(() => {
+    if (!currentUser) return null;
+    const index = uniqueDriverTimes.findIndex(t => t.username === currentUser);
+    if (index === -1) return null;
+    return {
+      rank: index + 1,
+      data: uniqueDriverTimes[index]
+    };
+  }, [uniqueDriverTimes, currentUser]);
+
+  // Format helper: 1:47.500
+  const formatTime = (t: LapTime | undefined) => {
+    if (!t || typeof t.minutes === 'undefined') return '--:--.---';
+    return `${t.minutes}:${t.seconds?.toString().padStart(2, '0')}.${t.milliseconds?.toString().padStart(3, '0')}`;
+  };
+
+  // Determine car for AI context
+  const userLastLap = times.find(t => t.username === currentUser);
+  const defaultCar = userLastLap 
+    ? CARS.find(c => c.id === userLastLap.carId) 
+    : CARS[0];
+
+  // --- Sticky Row Logic ---
+  useEffect(() => {
+    if (!currentUserStats || selectedDriver) { // Don't sticky if in detail view or no user data
+      setStickyState(null);
+      return;
+    }
+
+    const checkVisibility = () => {
+      const element = document.getElementById('current-user-row');
+      if (!element) return;
+
+      const rect = element.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      
+      // Offset for sticky header (Navbar + Track Header approx 130px)
+      const topThreshold = 140; 
+      
+      if (rect.bottom < topThreshold) {
+        setStickyState('top');
+      } else if (rect.top > viewportHeight) {
+        setStickyState('bottom');
+      } else {
+        setStickyState(null);
+      }
+    };
+
+    window.addEventListener('scroll', checkVisibility);
+    window.addEventListener('resize', checkVisibility);
+    
+    // Initial check
+    checkVisibility();
+
+    return () => {
+      window.removeEventListener('scroll', checkVisibility);
+      window.removeEventListener('resize', checkVisibility);
+    };
+  }, [currentUserStats, selectedDriver]);
+
+  const scrollToUserRow = () => {
+    const element = document.getElementById('current-user-row');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  // --- RENDER HELPERS ---
+
+  const renderLevel1 = () => (
+    <div className="bg-slate-800/50 rounded-xl overflow-hidden border border-slate-700 backdrop-blur-sm animate-fade-in relative">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="bg-slate-900/80 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+              <th className="px-6 py-4 font-bold">Pos</th>
+              <th className="px-6 py-4 font-bold">Driver</th>
+              <th className="px-6 py-4 font-bold">Best Time</th>
+              <th className="px-6 py-4 font-bold">Car Used</th>
+              <th className="px-6 py-4 font-bold text-center">Cond.</th>
+              <th className="px-6 py-4 font-bold text-right">Details</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-700/50">
+            {isLoading ? (
+               <tr>
+                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                  <div className="flex justify-center items-center gap-3">
+                    <span className="w-5 h-5 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></span>
+                    <span>Loading Telemetry...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : uniqueDriverTimes.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">
+                  No lap times recorded yet for this class. Be the first!
+                </td>
+              </tr>
+            ) : (
+              uniqueDriverTimes.map((time, index) => {
+                const isCurrentUser = time.username === currentUser;
+                return (
+                  <tr 
+                    key={time.id}
+                    id={isCurrentUser ? 'current-user-row' : undefined}
+                    onClick={() => setSelectedDriver(time.username)}
+                    className={`group transition-colors cursor-pointer ${
+                      isCurrentUser ? 'bg-red-900/20 hover:bg-red-900/30 border-l-4 border-l-red-500' : 'hover:bg-slate-700/30'
+                    }`}
+                  >
+                    <td className="px-6 py-4">
+                      <span className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                        index === 0 ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
+                        index === 1 ? 'bg-slate-400/20 text-slate-300 border border-slate-400/50' :
+                        index === 2 ? 'bg-orange-700/20 text-orange-400 border border-orange-700/50' :
+                        'text-slate-500'
+                      }`}>
+                        {index + 1}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 font-medium text-white">
+                      {time.username}
+                      {isCurrentUser && <span className="ml-2 text-[10px] uppercase bg-red-600 px-1.5 py-0.5 rounded text-white">You</span>}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-lg font-bold text-red-400 group-hover:text-red-300">
+                      {formatTime(time)}
+                    </td>
+                    <td className="px-6 py-4 text-slate-300 text-sm">
+                      <div className="flex flex-col">
+                        <span className="truncate max-w-[200px]">{getCarName(time.carId)}</span>
+                        <span className="text-[10px] text-slate-500 bg-slate-800 w-fit px-1 rounded mt-0.5">{getCarClass(time.carId)}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`text-xs px-2 py-1 rounded border ${
+                        time.conditions === 'Wet' 
+                        ? 'bg-blue-900/30 text-blue-400 border-blue-800' 
+                        : 'bg-orange-900/30 text-orange-400 border-orange-800'
+                      }`}>
+                        {time.conditions}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right text-slate-500">
+                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-auto group-hover:text-white transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderLevel2 = () => (
+    <div className="animate-fade-in-up">
+      <div className="flex items-center justify-between mb-4 bg-slate-800/80 p-4 rounded-lg border border-slate-700">
+        <div className="flex items-center gap-4">
+          <Button variant="secondary" onClick={() => setSelectedDriver(null)} className="!py-1.5 !px-3 text-sm">
+            ← Back
+          </Button>
+          <div>
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              {selectedDriver}
+              {selectedDriver === currentUser && <span className="text-xs bg-red-600 px-2 py-0.5 rounded text-white uppercase">You</span>}
+            </h3>
+            <p className="text-sm text-slate-400">Garage History at {selectedTrack.name}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-800/50 rounded-xl overflow-hidden border border-slate-700 backdrop-blur-sm">
+        <table className="w-full text-left">
+          <thead>
+             <tr className="bg-slate-900/80 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+              <th className="px-6 py-4 font-bold">Class</th>
+              <th className="px-6 py-4 font-bold">Car Model</th>
+              <th className="px-6 py-4 font-bold">Time</th>
+              <th className="px-6 py-4 font-bold">Gap</th>
+              <th className="px-6 py-4 font-bold text-center">Cond.</th>
+              <th className="px-6 py-4 font-bold text-right">Date Set</th>
+             </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-700/50">
+             {selectedDriverTimes.map((time, index) => {
+               // Calculate gap to best time
+               const bestTime = selectedDriverTimes[0].totalMilliseconds;
+               const gap = time.totalMilliseconds - bestTime;
+               const gapStr = gap === 0 ? '-' : `+${(gap / 1000).toFixed(3)}`;
+
+               return (
+                 <tr key={time.id} className="hover:bg-slate-700/30 transition-colors">
+                    <td className="px-6 py-4">
+                       <span className={`text-xs font-bold px-2 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300`}>
+                         {getCarClass(time.carId)}
+                       </span>
+                    </td>
+                    <td className="px-6 py-4 text-white font-medium">
+                       {getCarName(time.carId)}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-lg font-bold text-red-400">
+                       {formatTime(time)}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-sm text-slate-500">
+                       {gapStr}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                        <span className={`text-xs px-2 py-1 rounded border ${
+                        time.conditions === 'Wet' 
+                        ? 'bg-blue-900/30 text-blue-400 border-blue-800' 
+                        : 'bg-orange-900/30 text-orange-400 border-orange-800'
+                      }`}>
+                        {time.conditions}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right text-slate-500 text-sm">
+                        {new Date(time.timestamp).toLocaleDateString()}
+                    </td>
+                 </tr>
+               )
+             })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Header Area: Track Info & Filters */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-700 pb-6">
+        <div className="flex items-center gap-4">
+          {selectedTrack.imageUrl && (
+            <div className="bg-slate-100/5 p-2 rounded-lg border border-slate-700/50">
+               <img 
+                 src={selectedTrack.imageUrl} 
+                 alt={`${selectedTrack.name} Layout`} 
+                 className="w-16 h-16 object-contain invert opacity-90" 
+               />
+            </div>
+          )}
+          <div>
+            <h2 className="text-3xl font-black text-white uppercase tracking-wider italic">
+              {selectedTrack.name}
+            </h2>
+            <div className="flex items-center gap-2 text-slate-400 mt-1">
+              <span className="bg-slate-800 px-2 py-0.5 rounded text-xs border border-slate-700">{selectedTrack.country}</span>
+              <span className="text-sm">{selectedTrack.length}</span>
+            </div>
+          </div>
+        </div>
+
+        {!selectedDriver && (
+          <div className="flex gap-2">
+             {['ALL', 'GT3', 'GT4', 'CUP'].map(cls => (
+               <button
+                key={cls}
+                onClick={() => setFilterClass(cls)}
+                className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
+                  filterClass === cls 
+                    ? 'bg-red-600 text-white' 
+                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                }`}
+               >
+                 {cls}
+               </button>
+             ))}
+          </div>
+        )}
+      </div>
+
+      {/* AI Guide Section (Only show on main view) */}
+      {!selectedDriver && defaultCar && (
+        <TrackGuide track={selectedTrack} car={defaultCar} />
+      )}
+
+      {/* View Logic */}
+      {selectedDriver ? renderLevel2() : renderLevel1()}
+
+      {/* Sticky User Row (Visible when user scrolled away) */}
+      {stickyState && currentUserStats && (
+        <div 
+          onClick={scrollToUserRow}
+          className={`fixed left-0 right-0 lg:left-auto lg:right-auto lg:max-w-7xl mx-auto px-4 lg:px-4 z-40 transition-all duration-300 animate-fade-in cursor-pointer ${
+            stickyState === 'top' ? 'top-[140px]' : 'bottom-6'
+          }`}
+        >
+          <div className="bg-slate-900/95 backdrop-blur-md border border-red-500 rounded-lg shadow-2xl p-4 flex items-center justify-between ring-2 ring-red-500/20">
+             <div className="flex items-center gap-4">
+                <div className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded uppercase">Your Rank</div>
+                <div className="text-2xl font-bold text-white">#{currentUserStats.rank}</div>
+                <div className="hidden sm:block h-6 w-px bg-slate-700"></div>
+                <div className="hidden sm:block text-slate-300 text-sm truncate max-w-[150px]">
+                   {getCarName(currentUserStats.data.carId)}
+                </div>
+             </div>
+             <div className="flex items-center gap-4">
+                <div className="font-mono text-xl font-bold text-red-400">
+                    {formatTime(currentUserStats.data)}
+                </div>
+                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stickyState === 'top' ? "M5 10l7-7m0 0l7 7m-7-7v18" : "M19 14l-7 7m0 0l-7-7m7 7V3"} />
+                 </svg>
+             </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export default Leaderboard;
