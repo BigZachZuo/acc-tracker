@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { loginUser, registerUser, checkEmailExists, sendVerificationCode, verifyUserOtp } from '../services/storageService';
 import Input from './Input';
@@ -145,7 +144,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
     <div className="max-w-md mx-auto w-full bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 animate-fade-in-up mt-20">
       <div className="text-center mb-8 flex flex-col items-center">
         <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Assetto_Corsa_Competizione_Logo.png/640px-Assetto_Corsa_Competizione_Logo.png" 
+          src="/assets/ui/logo.png" 
           alt="Assetto Corsa Competizione" 
           className="h-16 w-auto object-contain mb-4"
         />

@@ -6,161 +6,161 @@ export const TRACKS: Track[] = [
     name: 'Monza Circuit', 
     country: 'Italy', 
     length: '5.793 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Monza_track_map.svg/320px-Monza_track_map.svg.png'
+    imageUrl: '/assets/tracks/monza.png'
   },
   { 
     id: 'spa', 
     name: 'Spa-Francorchamps', 
     country: 'Belgium', 
     length: '7.004 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Spa-Francorchamps_of_Belgium.svg/320px-Spa-Francorchamps_of_Belgium.svg.png'
+    imageUrl: '/assets/tracks/spa.png'
   },
   { 
     id: 'nurburgring', 
     name: 'Nürburgring GP', 
     country: 'Germany', 
     length: '5.148 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/N%C3%BCrburgring_Grand_Prix_Course_Chart.svg/320px-N%C3%BCrburgring_Grand_Prix_Course_Chart.svg.png'
+    imageUrl: '/assets/tracks/nurburgring.png'
   },
   { 
     id: 'silverstone', 
     name: 'Silverstone', 
     country: 'UK', 
     length: '5.891 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Silverstone_Circuit_2020.svg/320px-Silverstone_Circuit_2020.svg.png'
+    imageUrl: '/assets/tracks/silverstone.png'
   },
   { 
     id: 'brands_hatch', 
     name: 'Brands Hatch', 
     country: 'UK', 
     length: '3.916 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Brands_Hatch_Circuit_GP.svg/320px-Brands_Hatch_Circuit_GP.svg.png'
+    imageUrl: '/assets/tracks/brands_hatch.png'
   },
   { 
     id: 'zandvoort', 
     name: 'Zandvoort', 
     country: 'Netherlands', 
     length: '4.259 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Circuit_Zandvoort_2020.svg/320px-Circuit_Zandvoort_2020.svg.png'
+    imageUrl: '/assets/tracks/zandvoort.png'
   },
   { 
     id: 'misano', 
     name: 'Misano World Circuit', 
     country: 'Italy', 
     length: '4.226 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Misano_World_Circuit_Marco_Simoncelli_2008.svg/320px-Misano_World_Circuit_Marco_Simoncelli_2008.svg.png'
+    imageUrl: '/assets/tracks/misano.png'
   },
   { 
     id: 'paul_ricard', 
     name: 'Paul Ricard', 
     country: 'France', 
     length: '5.771 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Circuit_Paul_Ricard_2018_layout.svg/320px-Circuit_Paul_Ricard_2018_layout.svg.png'
+    imageUrl: '/assets/tracks/paul_ricard.png'
   },
   { 
     id: 'barcelona', 
     name: 'Circuit de Barcelona-Catalunya', 
     country: 'Spain', 
     length: '4.655 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Catalunya_2021.svg/320px-Catalunya_2021.svg.png'
+    imageUrl: '/assets/tracks/barcelona.png'
   },
   { 
     id: 'hungaroring', 
     name: 'Hungaroring', 
     country: 'Hungary', 
     length: '4.381 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Hungaroring.svg/320px-Hungaroring.svg.png'
+    imageUrl: '/assets/tracks/hungaroring.png'
   },
   { 
     id: 'imola', 
     name: 'Imola', 
     country: 'Italy', 
     length: '4.909 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Imola_2009.svg/320px-Imola_2009.svg.png'
+    imageUrl: '/assets/tracks/imola.png'
   },
   { 
     id: 'mount_panorama', 
     name: 'Mount Panorama (Bathurst)', 
     country: 'Australia', 
     length: '6.213 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Mount_Panorama_Circuit_2017.svg/320px-Mount_Panorama_Circuit_2017.svg.png'
+    imageUrl: '/assets/tracks/mount_panorama.png'
   },
   { 
     id: 'suzuka', 
     name: 'Suzuka Circuit', 
     country: 'Japan', 
     length: '5.807 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Suzuka_circuit_map_2005.svg/320px-Suzuka_circuit_map_2005.svg.png'
+    imageUrl: '/assets/tracks/suzuka.png'
   },
   { 
     id: 'kyalami', 
     name: 'Kyalami Grand Prix Circuit', 
     country: 'South Africa', 
     length: '4.529 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Kyalami_Grand_Prix_Circuit.svg/320px-Kyalami_Grand_Prix_Circuit.svg.png'
+    imageUrl: '/assets/tracks/kyalami.png'
   },
   { 
     id: 'laguna_seca', 
     name: 'Laguna Seca', 
     country: 'USA', 
     length: '3.602 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Laguna_Seca.svg/320px-Laguna_Seca.svg.png'
+    imageUrl: '/assets/tracks/laguna_seca.png'
   },
   { 
     id: 'cota', 
     name: 'Circuit of the Americas', 
     country: 'USA', 
     length: '5.513 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Austin_circuit.svg/320px-Austin_circuit.svg.png'
+    imageUrl: '/assets/tracks/cota.png'
   },
   { 
     id: 'watkins_glen', 
     name: 'Watkins Glen', 
     country: 'USA', 
     length: '5.552 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Watkins_Glen_International_Track_Map_Current.svg/320px-Watkins_Glen_International_Track_Map_Current.svg.png'
+    imageUrl: '/assets/tracks/watkins_glen.png'
   },
   { 
     id: 'indianapolis', 
     name: 'Indianapolis', 
     country: 'USA', 
     length: '3.925 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Indianapolis_Motor_Speedway_-_road_course.svg/320px-Indianapolis_Motor_Speedway_-_road_course.svg.png'
+    imageUrl: '/assets/tracks/indianapolis.png'
   },
   { 
     id: 'oulton_park', 
     name: 'Oulton Park', 
     country: 'UK', 
     length: '4.307 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Oulton_Park_Circuit_Map.svg/320px-Oulton_Park_Circuit_Map.svg.png'
+    imageUrl: '/assets/tracks/oulton_park.png'
   },
   { 
     id: 'snetterton', 
     name: 'Snetterton', 
     country: 'UK', 
     length: '4.779 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Snetterton_300_Circuit_Map.svg/320px-Snetterton_300_Circuit_Map.svg.png'
+    imageUrl: '/assets/tracks/snetterton.png'
   },
   { 
     id: 'donington', 
     name: 'Donington Park', 
     country: 'UK', 
     length: '4.020 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Donington_Park_GP_Circuit_Map.svg/320px-Donington_Park_GP_Circuit_Map.svg.png'
+    imageUrl: '/assets/tracks/donington.png'
   },
   { 
     id: 'valencia', 
     name: 'Valencia', 
     country: 'Spain', 
     length: '4.005 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Circuit_Ricardo_Tormo.svg/320px-Circuit_Ricardo_Tormo.svg.png'
+    imageUrl: '/assets/tracks/valencia.png'
   },
   { 
     id: 'red_bull_ring', 
     name: 'Red Bull Ring', 
     country: 'Austria', 
     length: '4.318 km',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Red_Bull_Ring_2022.svg/320px-Red_Bull_Ring_2022.svg.png'
+    imageUrl: '/assets/tracks/red_bull_ring.png'
   },
 ];
 

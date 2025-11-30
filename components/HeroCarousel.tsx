@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 
 const IMAGES = [
   {
-    url: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=2070&auto=format&fit=crop",
+    url: "/assets/hero/slide-1.jpg",
     title: "OFFICIAL GT WORLD CHALLENGE",
     subtitle: "Experience the real atmosphere of the GT3 championship."
   },
   {
-    url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2070&auto=format&fit=crop",
+    url: "/assets/hero/slide-2.jpg",
     title: "LASER SCANNED CIRCUITS",
     subtitle: "Every curb, bump, and detail reproduced with millimeter precision."
   },
   {
-    url: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=2070&auto=format&fit=crop",
+    url: "/assets/hero/slide-3.jpg",
     title: "DOMINATE THE GRID",
     subtitle: "Compare your times with the best drivers in the world."
   },
   {
-    url: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2072&auto=format&fit=crop",
+    url: "/assets/hero/slide-4.jpg",
     title: "DYNAMIC WEATHER & NIGHT",
     subtitle: "Adapt to 24-hour cycles and changing track conditions."
   }

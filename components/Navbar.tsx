@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, onLoginClick, onHome, o
           className="cursor-pointer flex items-center gap-4 group"
         >
           <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Assetto_Corsa_Competizione_Logo.png/320px-Assetto_Corsa_Competizione_Logo.png" 
+            src="/assets/ui/logo.png" 
             alt="Assetto Corsa Competizione" 
             className="h-8 w-auto object-contain hover:brightness-110 transition-all"
           />
