@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Track, Car, LapTime } from '../types';
 import { CARS } from '../constants';
@@ -312,7 +313,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
                <img 
                  src={selectedTrack.imageUrl} 
                  alt={`${selectedTrack.name} Layout`} 
-                 className="w-16 h-16 object-contain invert opacity-90" 
+                 className="w-16 h-16 object-contain brightness-0 invert opacity-90" 
                />
             </div>
           )}

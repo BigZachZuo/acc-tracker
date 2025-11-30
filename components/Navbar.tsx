@@ -21,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, onLoginClick, onHome, o
           <img 
             src="/assets/ui/logo.png" 
             alt="Assetto Corsa Competizione" 
-            className="h-8 w-auto object-contain hover:brightness-110 transition-all"
+            className="w-32 h-auto object-contain hover:brightness-110 transition-all"
           />
           <div className="h-6 w-px bg-slate-700 hidden sm:block"></div>
           <span className="font-bold text-xl text-white tracking-tight group-hover:text-red-500 transition-colors hidden sm:block">

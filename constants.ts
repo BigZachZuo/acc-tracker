@@ -1,3 +1,4 @@
+
 import { Track, Car } from './types';
 
 export const TRACKS: Track[] = [
@@ -6,161 +7,161 @@ export const TRACKS: Track[] = [
     name: 'Monza Circuit', 
     country: 'Italy', 
     length: '5.793 km',
-    imageUrl: '/assets/tracks/monza.png'
+    imageUrl: '/assets/tracks/monza.svg'
   },
   { 
     id: 'spa', 
     name: 'Spa-Francorchamps', 
     country: 'Belgium', 
     length: '7.004 km',
-    imageUrl: '/assets/tracks/spa.png'
+    imageUrl: '/assets/tracks/spa.svg'
   },
   { 
     id: 'nurburgring', 
     name: 'Nürburgring GP', 
     country: 'Germany', 
     length: '5.148 km',
-    imageUrl: '/assets/tracks/nurburgring.png'
+    imageUrl: '/assets/tracks/nurburgring.svg'
   },
   { 
     id: 'silverstone', 
     name: 'Silverstone', 
     country: 'UK', 
     length: '5.891 km',
-    imageUrl: '/assets/tracks/silverstone.png'
+    imageUrl: '/assets/tracks/silverstone.svg'
   },
   { 
     id: 'brands_hatch', 
     name: 'Brands Hatch', 
     country: 'UK', 
     length: '3.916 km',
-    imageUrl: '/assets/tracks/brands_hatch.png'
+    imageUrl: '/assets/tracks/brands_hatch.svg'
   },
   { 
     id: 'zandvoort', 
     name: 'Zandvoort', 
     country: 'Netherlands', 
     length: '4.259 km',
-    imageUrl: '/assets/tracks/zandvoort.png'
+    imageUrl: '/assets/tracks/zandvoort.svg'
   },
   { 
     id: 'misano', 
     name: 'Misano World Circuit', 
     country: 'Italy', 
     length: '4.226 km',
-    imageUrl: '/assets/tracks/misano.png'
+    imageUrl: '/assets/tracks/misano.svg'
   },
   { 
     id: 'paul_ricard', 
     name: 'Paul Ricard', 
     country: 'France', 
     length: '5.771 km',
-    imageUrl: '/assets/tracks/paul_ricard.png'
+    imageUrl: '/assets/tracks/paul_ricard.svg'
   },
   { 
     id: 'barcelona', 
     name: 'Circuit de Barcelona-Catalunya', 
     country: 'Spain', 
     length: '4.655 km',
-    imageUrl: '/assets/tracks/barcelona.png'
+    imageUrl: '/assets/tracks/barcelona.svg'
   },
   { 
     id: 'hungaroring', 
     name: 'Hungaroring', 
     country: 'Hungary', 
     length: '4.381 km',
-    imageUrl: '/assets/tracks/hungaroring.png'
+    imageUrl: '/assets/tracks/hungaroring.svg'
   },
   { 
     id: 'imola', 
     name: 'Imola', 
     country: 'Italy', 
     length: '4.909 km',
-    imageUrl: '/assets/tracks/imola.png'
+    imageUrl: '/assets/tracks/imola.svg'
   },
   { 
     id: 'mount_panorama', 
     name: 'Mount Panorama (Bathurst)', 
     country: 'Australia', 
     length: '6.213 km',
-    imageUrl: '/assets/tracks/mount_panorama.png'
+    imageUrl: '/assets/tracks/mount_panorama.svg'
   },
   { 
     id: 'suzuka', 
     name: 'Suzuka Circuit', 
     country: 'Japan', 
     length: '5.807 km',
-    imageUrl: '/assets/tracks/suzuka.png'
+    imageUrl: '/assets/tracks/suzuka.svg'
   },
   { 
     id: 'kyalami', 
     name: 'Kyalami Grand Prix Circuit', 
     country: 'South Africa', 
     length: '4.529 km',
-    imageUrl: '/assets/tracks/kyalami.png'
+    imageUrl: '/assets/tracks/kyalami.svg'
   },
   { 
     id: 'laguna_seca', 
     name: 'Laguna Seca', 
     country: 'USA', 
     length: '3.602 km',
-    imageUrl: '/assets/tracks/laguna_seca.png'
+    imageUrl: '/assets/tracks/laguna_seca.svg'
   },
   { 
     id: 'cota', 
     name: 'Circuit of the Americas', 
     country: 'USA', 
     length: '5.513 km',
-    imageUrl: '/assets/tracks/cota.png'
+    imageUrl: '/assets/tracks/cota.svg'
   },
   { 
     id: 'watkins_glen', 
     name: 'Watkins Glen', 
     country: 'USA', 
     length: '5.552 km',
-    imageUrl: '/assets/tracks/watkins_glen.png'
+    imageUrl: '/assets/tracks/watkins_glen.svg'
   },
   { 
     id: 'indianapolis', 
     name: 'Indianapolis', 
     country: 'USA', 
     length: '3.925 km',
-    imageUrl: '/assets/tracks/indianapolis.png'
+    imageUrl: '/assets/tracks/indianapolis.svg'
   },
   { 
     id: 'oulton_park', 
     name: 'Oulton Park', 
     country: 'UK', 
     length: '4.307 km',
-    imageUrl: '/assets/tracks/oulton_park.png'
+    imageUrl: '/assets/tracks/oulton_park.svg'
   },
   { 
     id: 'snetterton', 
     name: 'Snetterton', 
     country: 'UK', 
     length: '4.779 km',
-    imageUrl: '/assets/tracks/snetterton.png'
+    imageUrl: '/assets/tracks/snetterton.svg'
   },
   { 
     id: 'donington', 
     name: 'Donington Park', 
     country: 'UK', 
     length: '4.020 km',
-    imageUrl: '/assets/tracks/donington.png'
+    imageUrl: '/assets/tracks/donington.svg'
   },
   { 
     id: 'valencia', 
     name: 'Valencia', 
     country: 'Spain', 
     length: '4.005 km',
-    imageUrl: '/assets/tracks/valencia.png'
+    imageUrl: '/assets/tracks/valencia.svg'
   },
   { 
     id: 'red_bull_ring', 
     name: 'Red Bull Ring', 
     country: 'Austria', 
     length: '4.318 km',
-    imageUrl: '/assets/tracks/red_bull_ring.png'
+    imageUrl: '/assets/tracks/red_bull_ring.svg'
   },
 ];
 
