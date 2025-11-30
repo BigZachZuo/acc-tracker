@@ -4,15 +4,25 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
-  // Cast process to any to fix TS error: Property 'cwd' does not exist on type 'Process'
-  const env = loadEnv(mode, (process as any).cwd(), '');
+  const env = loadEnv(mode, process.cwd(), '');
 
   return {
     plugins: [react()],
     define: {
-      // Expose API_KEY to the client
+      // Expose API_KEY to the client for Netlify/Vercel
       'process.env.API_KEY': JSON.stringify(env.API_KEY),
+    },
+    build: {
+      chunkSizeWarningLimit: 1600,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-supabase': ['@supabase/supabase-js'],
+            'vendor-genai': ['@google/genai'],
+          },
+        },
+      },
     },
   };
 });
