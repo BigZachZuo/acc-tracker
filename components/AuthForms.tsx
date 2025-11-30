@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { loginUser, registerUser, checkEmailExists, sendVerificationCode, verifyUserOtp } from '../services/storageService';
 import Input from './Input';
@@ -181,13 +182,13 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
             {generatedOtp === "SENT_VIA_EMAIL" && <p className="text-xs text-slate-500 mt-1">(Check your spam folder)</p>}
           </div>
           <Input
-            label="Verification Code"
+            label="Verification Code / Password"
             type="text"
-            placeholder="123456"
+            placeholder="12345678"
             value={otpInput}
             onChange={(e) => setOtpInput(e.target.value)}
-            className="text-center tracking-[0.5em] font-mono text-xl"
-            maxLength={6}
+            className="text-center tracking-[0.2em] font-mono text-xl"
+            maxLength={30}
             autoFocus
             disabled={isLoading}
           />
