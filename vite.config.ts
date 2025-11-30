@@ -12,5 +12,17 @@ export default defineConfig(({ mode }) => {
       // Expose API_KEY to the client for Netlify/Vercel
       'process.env.API_KEY': JSON.stringify(env.API_KEY),
     },
+    build: {
+      chunkSizeWarningLimit: 1600,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-supabase': ['@supabase/supabase-js'],
+            'vendor-genai': ['@google/genai'],
+          },
+        },
+      },
+    },
   };
 });
