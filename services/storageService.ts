@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import { User, LapTime } from '../types';
 
@@ -157,13 +158,7 @@ export const registerUser = async (email: string, username: string): Promise<{ s
       created_at: new Date().toISOString()
     });
 
-    if (error) {
-      console.error("Register DB Error:", error);
-      if (error.message.includes('row-level security')) {
-        return { success: false, message: 'DB Permission Error: Please run the SQL setup script in Supabase.' };
-      }
-      return { success: false, message: error.message };
-    }
+    if (error) return { success: false, message: error.message };
     return { success: true, message: 'Registration successful' };
 
   } else {
@@ -199,14 +194,7 @@ export const loginUser = async (email: string): Promise<{ success: boolean, user
       .eq('email', email)
       .maybeSingle();
 
-    if (error) {
-      if (error.message.includes('row-level security')) {
-         return { success: false, message: 'DB Permission Error: Please run the SQL setup script in Supabase.' };
-      }
-      return { success: false, message: 'User profile not found. Please register.' };
-    }
-    
-    if (!data) return { success: false, message: 'User profile not found. Please register.' };
+    if (error || !data) return { success: false, message: 'User profile not found. Please register.' };
     
     const user = mapUserFromDb(data);
     localStorage.setItem(LS_CURRENT_USER_KEY, JSON.stringify(user)); 
@@ -291,12 +279,7 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
           .update(mapLapToDb(newLap))
           .eq('id', existing.id);
         
-        if (error) {
-           if (error.message.includes('row-level security')) {
-              return { success: false, message: "DB Error: Permissions denied. Please enable RLS policies." };
-           }
-           return { success: false, message: "DB Error: " + error.message };
-        }
+        if (error) return { success: false, message: "DB Error: " + error.message };
         return { success: true, message: "New Personal Best! Previous time updated." };
       } else {
         return { success: false, message: "Time slower than Personal Best. Not saved." };
@@ -306,12 +289,7 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
         .from('lap_times')
         .insert(mapLapToDb(newLap));
       
-      if (error) {
-         if (error.message.includes('row-level security')) {
-            return { success: false, message: "DB Error: Permissions denied. Please enable RLS policies." };
-         }
-         return { success: false, message: "DB Error: " + error.message };
-      }
+      if (error) return { success: false, message: "DB Error: " + error.message };
       return { success: true, message: "Lap time saved successfully." };
     }
 
