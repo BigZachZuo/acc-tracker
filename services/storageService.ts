@@ -144,7 +144,7 @@ export const registerUser = async (email: string, username: string): Promise<{ s
   if (USE_DB && supabase) {
     // Check username uniqueness
     const { data: existingUser } = await supabase.from('users').select('*').eq('username', username).maybeSingle();
-    if (existingUser) return { success: false, message: 'Username already taken' };
+    if (existingUser) return { success: false, message: '用户名已被占用' };
 
     const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
@@ -160,20 +160,20 @@ export const registerUser = async (email: string, username: string): Promise<{ s
     if (error) {
       console.error("Register DB Error:", error);
       if (error.message.includes('row-level security')) {
-        return { success: false, message: 'DB Permission Error: Please run the SQL setup script in Supabase.' };
+        return { success: false, message: '数据库权限错误: 请在Supabase中检查RLS策略。' };
       }
       return { success: false, message: error.message };
     }
-    return { success: true, message: 'Registration successful' };
+    return { success: true, message: '注册成功' };
 
   } else {
     // Local Storage Fallback
     const users: User[] = JSON.parse(localStorage.getItem(LS_USERS_KEY) || '[]');
     if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-      return { success: false, message: 'Email already registered' };
+      return { success: false, message: '该邮箱已注册' };
     }
     if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-      return { success: false, message: 'Username already taken' };
+      return { success: false, message: '用户名已被占用' };
     }
 
     const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
@@ -186,7 +186,7 @@ export const registerUser = async (email: string, username: string): Promise<{ s
     
     users.push(newUser);
     localStorage.setItem(LS_USERS_KEY, JSON.stringify(users));
-    return { success: true, message: 'Registration successful' };
+    return { success: true, message: '注册成功' };
   }
 };
 
@@ -201,12 +201,12 @@ export const loginUser = async (email: string): Promise<{ success: boolean, user
 
     if (error) {
       if (error.message.includes('row-level security')) {
-         return { success: false, message: 'DB Permission Error: Please run the SQL setup script in Supabase.' };
+         return { success: false, message: '数据库权限错误: 请在Supabase中检查RLS策略。' };
       }
-      return { success: false, message: 'User profile not found. Please register.' };
+      return { success: false, message: '用户不存在，请先注册。' };
     }
     
-    if (!data) return { success: false, message: 'User profile not found. Please register.' };
+    if (!data) return { success: false, message: '用户不存在，请先注册。' };
     
     const user = mapUserFromDb(data);
     localStorage.setItem(LS_CURRENT_USER_KEY, JSON.stringify(user)); 
@@ -221,7 +221,7 @@ export const loginUser = async (email: string): Promise<{ success: boolean, user
       localStorage.setItem(LS_CURRENT_USER_KEY, JSON.stringify(user));
       return { success: true, user };
     }
-    return { success: false, message: 'User not found' };
+    return { success: false, message: '用户不存在' };
   }
 };
 
@@ -293,13 +293,13 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
         
         if (error) {
            if (error.message.includes('row-level security')) {
-              return { success: false, message: "DB Error: Permissions denied. Please enable RLS policies." };
+              return { success: false, message: "数据库错误: 权限被拒绝，请启用RLS策略。" };
            }
-           return { success: false, message: "DB Error: " + error.message };
+           return { success: false, message: "数据库错误: " + error.message };
         }
-        return { success: true, message: "New Personal Best! Previous time updated." };
+        return { success: true, message: "新的个人最佳成绩！记录已更新。" };
       } else {
-        return { success: false, message: "Time slower than Personal Best. Not saved." };
+        return { success: false, message: "成绩慢于个人最佳，未记录。" };
       }
     } else {
       const { error } = await supabase
@@ -308,11 +308,11 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
       
       if (error) {
          if (error.message.includes('row-level security')) {
-            return { success: false, message: "DB Error: Permissions denied. Please enable RLS policies." };
+            return { success: false, message: "数据库错误: 权限被拒绝，请启用RLS策略。" };
          }
-         return { success: false, message: "DB Error: " + error.message };
+         return { success: false, message: "数据库错误: " + error.message };
       }
-      return { success: true, message: "Lap time saved successfully." };
+      return { success: true, message: "圈速记录成功。" };
     }
 
   } else {
@@ -328,25 +328,31 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
       if (newLap.totalMilliseconds < existing.totalMilliseconds) {
         times[existingIndex] = newLap;
         localStorage.setItem(LS_LAP_TIMES_KEY, JSON.stringify(times));
-        return { success: true, message: "New Personal Best! Previous time updated." };
+        return { success: true, message: "新的个人最佳成绩！记录已更新。" };
       } else {
-        return { success: false, message: "Time slower than Personal Best. Not saved." };
+        return { success: false, message: "成绩慢于个人最佳，未记录。" };
       }
     } else {
       times.push(newLap);
       localStorage.setItem(LS_LAP_TIMES_KEY, JSON.stringify(times));
-      return { success: true, message: "Lap time saved successfully." };
+      return { success: true, message: "圈速记录成功。" };
     }
   }
 };
 
-export const deleteLapTime = async (id: string): Promise<void> => {
+export const deleteLapTime = async (id: string): Promise<{ success: boolean, message: string }> => {
   if (USE_DB && supabase) {
-    await supabase.from('lap_times').delete().eq('id', id);
+    const { error } = await supabase.from('lap_times').delete().eq('id', id);
+    if (error) {
+      console.error("Delete Error:", error);
+      return { success: false, message: error.message };
+    }
+    return { success: true, message: "已删除" };
   } else {
     let times: LapTime[] = JSON.parse(localStorage.getItem(LS_LAP_TIMES_KEY) || '[]');
     times = times.filter(t => t.id !== id);
     localStorage.setItem(LS_LAP_TIMES_KEY, JSON.stringify(times));
+    return { success: true, message: "已删除" };
   }
 };
 

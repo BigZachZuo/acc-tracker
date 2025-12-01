@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Track, User, LapTime } from '../types';
 import { CARS } from '../constants';
@@ -34,17 +33,17 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
     const ms = parseInt(millis);
 
     if (isNaN(m) || isNaN(s) || isNaN(ms)) {
-      setError('Please enter valid numbers for time.');
+      setError('请输入有效的数字。');
       setIsSubmitting(false);
       return;
     }
     if (s >= 60) {
-      setError('Seconds must be less than 60.');
+      setError('秒数必须小于60。');
       setIsSubmitting(false);
       return;
     }
     if (ms >= 1000) {
-      setError('Milliseconds must be less than 1000.');
+      setError('毫秒数必须小于1000。');
       setIsSubmitting(false);
       return;
     }
@@ -88,13 +87,13 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
   return (
     <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-2xl max-w-lg mx-auto w-full animate-fade-in-up">
       <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-        <span className="text-red-500">New Lap:</span> {track.name}
+        <span className="text-red-500">录入圈速:</span> {track.name}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         
         <div>
-          <label className="block text-slate-400 text-sm font-bold mb-2">Vehicle</label>
+          <label className="block text-slate-400 text-sm font-bold mb-2">选择车辆</label>
           <select 
             value={carId} 
             onChange={(e) => setCarId(e.target.value)}
@@ -109,7 +108,7 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
         </div>
 
         <div>
-          <label className="block text-slate-400 text-sm font-bold mb-2">Lap Time</label>
+          <label className="block text-slate-400 text-sm font-bold mb-2">圈速成绩</label>
           <div className="flex items-end gap-2">
             <div className="flex-1">
               <Input 
@@ -120,7 +119,7 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
                 onChange={(e) => setMinutes(e.target.value)}
                 required
               />
-              <span className="text-xs text-slate-500 text-center block mt-1">Min</span>
+              <span className="text-xs text-slate-500 text-center block mt-1">分</span>
             </div>
             <span className="text-2xl text-slate-500 pb-8">:</span>
             <div className="flex-1">
@@ -132,7 +131,7 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
                 onChange={(e) => setSeconds(e.target.value)}
                 required
               />
-              <span className="text-xs text-slate-500 text-center block mt-1">Sec</span>
+              <span className="text-xs text-slate-500 text-center block mt-1">秒</span>
             </div>
             <span className="text-2xl text-slate-500 pb-8">.</span>
             <div className="flex-1">
@@ -144,13 +143,13 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
                 onChange={(e) => setMillis(e.target.value)}
                 required
               />
-              <span className="text-xs text-slate-500 text-center block mt-1">Ms</span>
+              <span className="text-xs text-slate-500 text-center block mt-1">毫秒</span>
             </div>
           </div>
         </div>
 
         <div>
-          <label className="block text-slate-400 text-sm font-bold mb-2">Track Conditions</label>
+          <label className="block text-slate-400 text-sm font-bold mb-2">赛道状况</label>
           <div className="flex gap-4">
             <button
               type="button"
@@ -161,7 +160,7 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
                   : 'bg-slate-900 border-slate-700 text-slate-500 hover:bg-slate-800'
               }`}
             >
-              ☀️ Dry
+              ☀️ 干地
             </button>
             <button
               type="button"
@@ -172,7 +171,7 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
                   : 'bg-slate-900 border-slate-700 text-slate-500 hover:bg-slate-800'
               }`}
             >
-              🌧️ Wet
+              🌧️ 湿地
             </button>
           </div>
         </div>
@@ -191,10 +190,10 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track, user, onSuccess, o
 
         <div className="flex gap-3 pt-4">
           <Button type="button" variant="ghost" onClick={onCancel} className="flex-1" disabled={isSubmitting}>
-            Back
+            返回
           </Button>
           <Button type="submit" className="flex-1" disabled={!!successMessage || isSubmitting} isLoading={isSubmitting}>
-            Submit Time
+            提交成绩
           </Button>
         </div>
       </form>

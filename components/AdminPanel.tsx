@@ -35,8 +35,14 @@ const AdminPanel: React.FC = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    await deleteLapTime(id);
-    refreshData();
+    if (confirm("Confirm delete record?")) {
+        const result = await deleteLapTime(id);
+        if (result.success) {
+            refreshData();
+        } else {
+            alert("Delete failed: " + result.message);
+        }
+    }
   };
 
   const getCarName = (carId: string) => {

@@ -37,24 +37,24 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, onLoginClick, onHome, o
                 onClick={onAdmin}
                 className="!px-3 !py-1.5 !text-xs border-amber-500/50 text-amber-500 hover:bg-amber-900/20"
               >
-                Admin Panel
+                管理后台
               </Button>
             )}
             
             <div className="hidden sm:flex flex-col items-end">
               <span className="text-xs text-slate-400 uppercase tracking-widest">
-                {user.isAdmin ? 'Race Control' : 'Driver'}
+                {user.isAdmin ? 'RACE CONTROL' : 'DRIVER'}
               </span>
               <span className="font-bold text-white">{user.username}</span>
             </div>
             <Button variant="ghost" onClick={onLogout} className="!px-2 !text-sm border border-slate-700">
-              Logout
+              退出登录
             </Button>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <Button onClick={onLoginClick} variant="primary" className="!px-4 !py-1.5 text-sm shadow-red-900/20">
-              Login / Register
+              登录 / 注册
             </Button>
           </div>
         )}

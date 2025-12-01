@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Track, Car, LapTime } from '../types';
 import { CARS } from '../constants';
-import { fetchLapTimes } from '../services/storageService';
+import { fetchLapTimes, deleteLapTime } from '../services/storageService';
 import Button from './Button';
 
 interface LeaderboardProps {
@@ -19,17 +19,24 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
   // Sticky User Row State
   const [stickyState, setStickyState] = useState<'top' | 'bottom' | null>(null);
 
+  // Delete Modal State
+  const [lapToDelete, setLapToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Helper to reload data
+  const loadData = async () => {
+    setIsLoading(true);
+    const loadedTimes = await fetchLapTimes(selectedTrack.id);
+    setTimes(loadedTimes);
+    setIsLoading(false);
+    // Note: We don't reset selectedDriver here to allow refreshing the list after delete while staying in view
+    // But if we delete the last lap, we might want to handle that.
+    setStickyState(null);
+  };
+
   useEffect(() => {
-    // Load times initially and whenever track changes
-    const loadData = async () => {
-      setIsLoading(true);
-      const loadedTimes = await fetchLapTimes(selectedTrack.id);
-      setTimes(loadedTimes);
-      setIsLoading(false);
-      setSelectedDriver(null); // Reset detail view on track change
-      setStickyState(null);
-    };
     loadData();
+    setSelectedDriver(null); // Reset detail view only when track changes
   }, [selectedTrack]);
 
   const getCarName = (carId: string) => {
@@ -87,6 +94,33 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
     return `${t.minutes}:${t.seconds?.toString().padStart(2, '0')}.${t.milliseconds?.toString().padStart(3, '0')}`;
   };
 
+  const handleRequestDelete = (lapId: string) => {
+    setLapToDelete(lapId);
+  };
+
+  const confirmDelete = async () => {
+    if (!lapToDelete) return;
+    setIsDeleting(true);
+    
+    const result = await deleteLapTime(lapToDelete);
+    
+    if (result.success) {
+      await loadData(); // Refresh data
+      
+      // If user deleted their last lap, go back to main view
+      // We need to re-calc remaining laps based on the old state minus the deleted one
+      const remainingLaps = selectedDriverTimes.filter(t => t.id !== lapToDelete);
+      if (remainingLaps.length === 0) {
+        setSelectedDriver(null);
+      }
+    } else {
+      alert("删除失败: " + result.message);
+    }
+
+    setIsDeleting(false);
+    setLapToDelete(null);
+  };
+
   // --- Sticky Row Logic ---
   useEffect(() => {
     if (!currentUserStats || selectedDriver) { // Don't sticky if in detail view or no user data
@@ -134,7 +168,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
 
   // --- RENDER HELPERS ---
 
-  const renderLevel1 = () => (
+  const renderLevel1 = () => {
+    // Get the absolute best time for Gap calculation
+    const overallBestTime = uniqueDriverTimes.length > 0 ? uniqueDriverTimes[0].totalMilliseconds : 0;
+
+    return (
     <div className="bg-slate-800/50 rounded-xl overflow-hidden border border-slate-700 backdrop-blur-sm animate-fade-in relative">
       <div className="overflow-x-auto">
         <table className="w-full text-left">
@@ -143,6 +181,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
               <th className="px-6 py-4 font-bold">Pos</th>
               <th className="px-6 py-4 font-bold">Driver</th>
               <th className="px-6 py-4 font-bold">Best Time</th>
+              <th className="px-6 py-4 font-bold">Gap</th>
               <th className="px-6 py-4 font-bold">Car Used</th>
               <th className="px-6 py-4 font-bold text-center">Cond.</th>
               <th className="px-6 py-4 font-bold text-right">Details</th>
@@ -151,7 +190,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
           <tbody className="divide-y divide-slate-700/50">
             {isLoading ? (
                <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                   <div className="flex justify-center items-center gap-3">
                     <span className="w-5 h-5 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></span>
                     <span>Loading Telemetry...</span>
@@ -160,13 +199,18 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
               </tr>
             ) : uniqueDriverTimes.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">
+                <td colSpan={7} className="px-6 py-12 text-center text-slate-500 italic">
                   No lap times recorded yet for this class. Be the first!
                 </td>
               </tr>
             ) : (
               uniqueDriverTimes.map((time, index) => {
                 const isCurrentUser = time.username === currentUser;
+                
+                // Calculate Gap
+                const gap = time.totalMilliseconds - overallBestTime;
+                const gapStr = index === 0 ? '-' : `+${(gap / 1000).toFixed(3)}`;
+
                 return (
                   <tr 
                     key={time.id}
@@ -192,6 +236,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
                     </td>
                     <td className="px-6 py-4 font-mono text-lg font-bold text-red-400 group-hover:text-red-300">
                       {formatTime(time)}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-sm text-slate-400">
+                      {gapStr}
                     </td>
                     <td className="px-6 py-4 text-slate-300 text-sm">
                       <div className="flex flex-col">
@@ -222,8 +269,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
       </div>
     </div>
   );
+  }
 
-  const renderLevel2 = () => (
+  const renderLevel2 = () => {
+    // Check if the current logged-in user is viewing their own profile
+    const isOwner = currentUser === selectedDriver;
+
+    return (
     <div className="animate-fade-in-up">
       <div className="flex items-center justify-between mb-4 bg-slate-800/80 p-4 rounded-lg border border-slate-700">
         <div className="flex items-center gap-4">
@@ -233,7 +285,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
           <div>
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
               {selectedDriver}
-              {selectedDriver === currentUser && <span className="text-xs bg-red-600 px-2 py-0.5 rounded text-white uppercase">You</span>}
+              {isOwner && <span className="text-xs bg-red-600 px-2 py-0.5 rounded text-white uppercase">You</span>}
             </h3>
             <p className="text-sm text-slate-400">Garage History at {selectedTrack.name}</p>
           </div>
@@ -250,17 +302,18 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
               <th className="px-6 py-4 font-bold">Gap</th>
               <th className="px-6 py-4 font-bold text-center">Cond.</th>
               <th className="px-6 py-4 font-bold text-right">Date Set</th>
+              {isOwner && <th className="px-6 py-4 font-bold text-right">Actions</th>}
              </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
              {selectedDriverTimes.map((time, index) => {
-               // Calculate gap to best time
+               // Calculate gap to their own best time (Level 2 compares to self)
                const bestTime = selectedDriverTimes[0].totalMilliseconds;
                const gap = time.totalMilliseconds - bestTime;
                const gapStr = gap === 0 ? '-' : `+${(gap / 1000).toFixed(3)}`;
 
                return (
-                 <tr key={time.id} className="hover:bg-slate-700/30 transition-colors">
+                 <tr key={time.id} className="hover:bg-slate-700/30 transition-colors group">
                     <td className="px-6 py-4">
                        <span className={`text-xs font-bold px-2 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300`}>
                          {getCarClass(time.carId)}
@@ -287,6 +340,19 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
                     <td className="px-6 py-4 text-right text-slate-500 text-sm">
                         {new Date(time.timestamp).toLocaleDateString()}
                     </td>
+                    {isOwner && (
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleRequestDelete(time.id); }}
+                          className="text-slate-600 hover:text-red-500 transition-colors p-1"
+                          title="Delete lap time"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </td>
+                    )}
                  </tr>
                )
              })}
@@ -295,6 +361,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
       </div>
     </div>
   );
+  }
 
   return (
     <div className="space-y-6">
@@ -368,6 +435,36 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stickyState === 'top' ? "M5 10l7-7m0 0l7 7m-7-7v18" : "M19 14l-7 7m0 0l-7-7m7 7V3"} />
                  </svg>
              </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {lapToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all scale-100 animate-fade-in-up">
+            <h3 className="text-xl font-bold text-white mb-2">确认删除?</h3>
+            <p className="text-slate-400 mb-6">
+              您确定要删除这条圈速记录吗？<br/>
+              此操作<span className="text-red-500 font-bold">无法撤销</span>。
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button 
+                variant="secondary" 
+                onClick={() => setLapToDelete(null)}
+                disabled={isDeleting}
+              >
+                取消
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={confirmDelete}
+                isLoading={isDeleting}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                确认删除
+              </Button>
+            </div>
           </div>
         </div>
       )}

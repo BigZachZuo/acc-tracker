@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { User, Track, ViewState } from './types';
 import { TRACKS } from './constants';
@@ -88,7 +87,7 @@ const App: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-slate-900 sticky top-[64px] z-40 py-4 shadow-lg lg:shadow-none border-b lg:border-none border-slate-800">
           
           <div className="w-full lg:w-auto">
-             <label className="text-xs text-slate-500 uppercase font-bold tracking-wider block mb-1 lg:hidden">Select Circuit</label>
+             <label className="text-xs text-slate-500 uppercase font-bold tracking-wider block mb-1 lg:hidden">选择赛道</label>
              <div className="relative">
                 <select 
                   className="w-full lg:w-64 bg-slate-800 text-white font-bold border border-slate-700 rounded-lg px-4 py-3 appearance-none focus:ring-1 focus:ring-red-500 focus:border-red-500 cursor-pointer hover:bg-slate-700 transition-colors"
@@ -112,7 +111,7 @@ const App: React.FC = () => {
              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
               </svg>
-             Log Lap Time
+             录入圈速
           </Button>
         </div>
 

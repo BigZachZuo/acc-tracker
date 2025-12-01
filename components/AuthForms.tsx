@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { loginUser, registerUser, checkEmailExists, sendVerificationCode, verifyUserOtp } from '../services/storageService';
 import Input from './Input';
@@ -39,7 +38,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
     setError('');
     
     if (!email.trim() || !email.includes('@')) {
-      setError('Please enter a valid email address.');
+      setError('请输入有效的电子邮箱地址。');
       return;
     }
 
@@ -49,13 +48,13 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
       const emailExists = await checkEmailExists(email);
 
       if (isRegistering && emailExists) {
-        setError('This email is already registered. Please login.');
+        setError('该邮箱已注册，请直接登录。');
         setIsLoading(false);
         return;
       }
 
       if (!isRegistering && !emailExists) {
-        setError('No account found with this email. Please register.');
+        setError('该邮箱未注册，请先注册账号。');
         setIsLoading(false);
         return;
       }
@@ -65,7 +64,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
       setStep('VERIFY');
     } catch (err) {
       console.error(err);
-      setError('Connection error or invalid email. Please try again.');
+      setError('连接错误或邮箱无效，请重试。');
     }
     setIsLoading(false);
   };
@@ -87,7 +86,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
     }
 
     if (!isValid) {
-      setError('Invalid verification code. Please try again.');
+      setError('验证码无效，请重试。');
       setIsLoading(false);
       return;
     }
@@ -103,10 +102,10 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
         if (result.success && result.user) {
           onLogin(result.user);
         } else {
-          setError(result.message || 'Login failed');
+          setError(result.message || '登录失败');
         }
       } catch (err) {
-        setError('Login error occurred.');
+        setError('登录过程中发生错误。');
       }
       setIsLoading(false);
     }
@@ -119,7 +118,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
     setIsLoading(true);
 
     if (!username.trim()) {
-      setError('Username is required.');
+      setError('请输入用户名。');
       setIsLoading(false);
       return;
     }
@@ -136,7 +135,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
         setError(result.message);
       }
     } catch (err) {
-      setError('Registration failed.');
+      setError('注册失败。');
     }
     setIsLoading(false);
   };
@@ -151,7 +150,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
         />
         <h2 className="text-xl font-bold text-white tracking-widest uppercase">Tracker<span className="text-red-500">Pro</span></h2>
         <p className="text-slate-400 mt-2">
-          {isRegistering ? 'Create your driver profile' : 'Welcome back, driver'}
+          {isRegistering ? '创建车手档案' : '欢迎回来，车手'}
         </p>
       </div>
 
@@ -159,7 +158,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
       {step === 'EMAIL' && (
         <form onSubmit={handleSendCode} className="space-y-6">
           <Input
-            label="Email Address"
+            label="电子邮箱"
             type="email"
             placeholder="name@example.com"
             value={email}
@@ -169,7 +168,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
           />
           {error && <div className="text-red-500 text-sm text-center font-bold">{error}</div>}
           <Button type="submit" className="w-full py-3 text-lg" isLoading={isLoading}>
-            {isLoading ? 'Sending...' : 'Get Verification Code'}
+            {isLoading ? '发送中...' : '获取验证码'}
           </Button>
         </form>
       )}
@@ -178,11 +177,11 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
       {step === 'VERIFY' && (
         <form onSubmit={handleVerifyCode} className="space-y-6 animate-fade-in">
           <div className="text-center text-slate-400 text-sm mb-4">
-            We sent a code to <span className="text-white font-bold">{email}</span>
-            {generatedOtp === "SENT_VIA_EMAIL" && <p className="text-xs text-slate-500 mt-1">(Check your spam folder)</p>}
+            我们已发送验证码至 <span className="text-white font-bold">{email}</span>
+            {generatedOtp === "SENT_VIA_EMAIL" && <p className="text-xs text-slate-500 mt-1">(请检查垃圾邮件文件夹)</p>}
           </div>
           <Input
-            label="Verification Code / Password"
+            label="验证码 / 密码"
             type="text"
             placeholder="12345678"
             value={otpInput}
@@ -194,14 +193,14 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
           />
           {error && <div className="text-red-500 text-sm text-center font-bold">{error}</div>}
           <Button type="submit" className="w-full py-3 text-lg" isLoading={isLoading}>
-            Verify & {isRegistering ? 'Continue' : 'Login'}
+            验证并{isRegistering ? '继续' : '登录'}
           </Button>
           <button 
             type="button" 
             onClick={() => setStep('EMAIL')}
             className="w-full text-slate-500 text-sm hover:text-white"
           >
-            Change Email
+            更换邮箱
           </button>
         </form>
       )}
@@ -210,11 +209,11 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
       {step === 'DETAILS' && (
         <form onSubmit={handleCompleteRegistration} className="space-y-6 animate-fade-in">
           <div className="bg-green-900/20 border border-green-900/50 text-green-400 p-3 rounded text-center text-sm mb-4">
-             ✓ Email Verified
+             ✓ 邮箱已验证
           </div>
           <Input
-            label="Driver Name (Username)"
-            placeholder="e.g. MaxVerstappen33"
+            label="车手昵称 (用户名)"
+            placeholder="例如：MaxVerstappen33"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             autoFocus
@@ -222,16 +221,16 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
           />
           {error && <div className="text-red-500 text-sm text-center font-bold">{error}</div>}
           <Button type="submit" className="w-full py-3 text-lg" isLoading={isLoading}>
-            Complete Registration
+            完成注册
           </Button>
         </form>
       )}
 
       <div className="mt-6 text-center pt-6 border-t border-slate-700">
         <p className="text-slate-500 text-sm">
-          {isRegistering ? "Already have an account?" : "New to the grid?"}{' '}
+          {isRegistering ? "已有账号？" : "新加入比赛？"}{' '}
           <button onClick={handleToggleMode} className="text-red-500 hover:text-red-400 font-bold ml-1">
-            {isRegistering ? 'Login here' : 'Register here'}
+            {isRegistering ? '立即登录' : '立即注册'}
           </button>
         </p>
       </div>
