@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Track, Car, LapTime } from '../types';
 import { CARS } from '../constants';
 import { fetchLapTimes } from '../services/storageService';
-import TrackGuide from './TrackGuide';
 import Button from './Button';
 
 interface LeaderboardProps {
@@ -87,12 +86,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
     if (!t || typeof t.minutes === 'undefined') return '--:--.---';
     return `${t.minutes}:${t.seconds?.toString().padStart(2, '0')}.${t.milliseconds?.toString().padStart(3, '0')}`;
   };
-
-  // Determine car for AI context
-  const userLastLap = times.find(t => t.username === currentUser);
-  const defaultCar = userLastLap 
-    ? CARS.find(c => c.id === userLastLap.carId) 
-    : CARS[0];
 
   // --- Sticky Row Logic ---
   useEffect(() => {
@@ -346,11 +339,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
           </div>
         )}
       </div>
-
-      {/* AI Guide Section (Only show on main view) */}
-      {!selectedDriver && defaultCar && (
-        <TrackGuide track={selectedTrack} car={defaultCar} />
-      )}
 
       {/* View Logic */}
       {selectedDriver ? renderLevel2() : renderLevel1()}
