@@ -1,3 +1,4 @@
+
 # 图片素材命名指南
 
 为了确保网站能正确显示图片，请严格按照以下文件名命名你的素材，并放入对应的文件夹中。
@@ -37,8 +38,10 @@ public/
 | 赛道名称 | 必须使用的文件名 |
 | :--- | :--- |
 | Monza | `monza.svg` |
+| Zolder | `zolder.svg` |
 | Spa-Francorchamps | `spa.svg` |
-| Nürburgring | `nurburgring.svg` |
+| Nürburgring GP | `nurburgring.svg` |
+| Nürburgring 24h | `nurburgring_24h.svg` |
 | Silverstone | `silverstone.svg` |
 | Brands Hatch | `brands_hatch.svg` |
 | Zandvoort | `zandvoort.svg` |

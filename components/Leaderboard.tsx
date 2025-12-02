@@ -389,8 +389,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ selectedTrack, currentUser })
         </div>
 
         {!selectedDriver && (
-          <div className="flex gap-2">
-             {['ALL', 'GT3', 'GT4', 'CUP'].map(cls => (
+          <div className="flex gap-2 flex-wrap">
+             {['ALL', 'GT3', 'GT2', 'GT4', 'CUP'].map(cls => (
                <button
                 key={cls}
                 onClick={() => setFilterClass(cls)}

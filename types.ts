@@ -31,7 +31,7 @@ export interface Track {
 export interface Car {
   id: string;
   name: string;
-  class: 'GT3' | 'GT4' | 'TCX' | 'CUP';
+  class: 'GT3' | 'GT4' | 'GT2' | 'TCX' | 'CUP' | 'GTC';
   brand: string;
 }
 

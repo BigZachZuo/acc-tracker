@@ -2,12 +2,55 @@
 import { Track, Car } from './types';
 
 export const TRACKS: Track[] = [
+  // Base Game
   { 
     id: 'monza', 
     name: 'Monza Circuit', 
     country: 'Italy', 
     length: '5.793 km',
     imageUrl: '/assets/tracks/monza.svg'
+  },
+  { 
+    id: 'zolder', 
+    name: 'Zolder', 
+    country: 'Belgium', 
+    length: '4.011 km',
+    imageUrl: '/assets/tracks/zolder.svg'
+  },
+  { 
+    id: 'brands_hatch', 
+    name: 'Brands Hatch', 
+    country: 'UK', 
+    length: '3.916 km',
+    imageUrl: '/assets/tracks/brands_hatch.svg'
+  },
+  { 
+    id: 'silverstone', 
+    name: 'Silverstone', 
+    country: 'UK', 
+    length: '5.891 km',
+    imageUrl: '/assets/tracks/silverstone.svg'
+  },
+  { 
+    id: 'paul_ricard', 
+    name: 'Paul Ricard', 
+    country: 'France', 
+    length: '5.771 km',
+    imageUrl: '/assets/tracks/paul_ricard.svg'
+  },
+  { 
+    id: 'misano', 
+    name: 'Misano World Circuit', 
+    country: 'Italy', 
+    length: '4.226 km',
+    imageUrl: '/assets/tracks/misano.svg'
+  },
+  { 
+    id: 'zandvoort', 
+    name: 'Zandvoort', 
+    country: 'Netherlands', 
+    length: '4.259 km',
+    imageUrl: '/assets/tracks/zandvoort.svg'
   },
   { 
     id: 'spa', 
@@ -18,186 +61,167 @@ export const TRACKS: Track[] = [
   },
   { 
     id: 'nurburgring', 
-    name: 'Nürburgring GP', 
+    name: 'Nürburgring', 
     country: 'Germany', 
     length: '5.148 km',
     imageUrl: '/assets/tracks/nurburgring.svg'
   },
-  { 
-    id: 'silverstone', 
-    name: 'Silverstone', 
-    country: 'UK', 
-    length: '5.891 km',
-    imageUrl: '/assets/tracks/silverstone.svg'
-  },
-  { 
-    id: 'brands_hatch', 
-    name: 'Brands Hatch', 
-    country: 'UK', 
-    length: '3.916 km',
-    imageUrl: '/assets/tracks/brands_hatch.svg'
-  },
-  { 
-    id: 'zandvoort', 
-    name: 'Zandvoort', 
-    country: 'Netherlands', 
-    length: '4.259 km',
-    imageUrl: '/assets/tracks/zandvoort.svg'
-  },
-  { 
-    id: 'misano', 
-    name: 'Misano World Circuit', 
-    country: 'Italy', 
-    length: '4.226 km',
-    imageUrl: '/assets/tracks/misano.svg'
-  },
-  { 
-    id: 'paul_ricard', 
-    name: 'Paul Ricard', 
-    country: 'France', 
-    length: '5.771 km',
-    imageUrl: '/assets/tracks/paul_ricard.svg'
-  },
-  { 
-    id: 'barcelona', 
-    name: 'Circuit de Barcelona-Catalunya', 
-    country: 'Spain', 
-    length: '4.655 km',
-    imageUrl: '/assets/tracks/barcelona.svg'
-  },
-  { 
-    id: 'hungaroring', 
-    name: 'Hungaroring', 
-    country: 'Hungary', 
+  {
+    id: 'hungaroring',
+    name: 'Hungaroring',
+    country: 'Hungary',
     length: '4.381 km',
     imageUrl: '/assets/tracks/hungaroring.svg'
   },
-  { 
-    id: 'imola', 
-    name: 'Imola', 
-    country: 'Italy', 
+  {
+    id: 'barcelona',
+    name: 'Barcelona',
+    country: 'Spain',
+    length: '4.655 km',
+    imageUrl: '/assets/tracks/barcelona.svg'
+  },
+  // 2020 GT World Challenge Pack
+  {
+    id: 'imola',
+    name: 'Imola',
+    country: 'Italy',
     length: '4.909 km',
     imageUrl: '/assets/tracks/imola.svg'
   },
-  { 
-    id: 'mount_panorama', 
-    name: 'Mount Panorama (Bathurst)', 
-    country: 'Australia', 
+  // Intercontinental GT Pack
+  {
+    id: 'mount_panorama',
+    name: 'Mount Panorama',
+    country: 'Australia',
     length: '6.213 km',
     imageUrl: '/assets/tracks/mount_panorama.svg'
   },
-  { 
-    id: 'suzuka', 
-    name: 'Suzuka Circuit', 
-    country: 'Japan', 
-    length: '5.807 km',
-    imageUrl: '/assets/tracks/suzuka.svg'
-  },
-  { 
-    id: 'kyalami', 
-    name: 'Kyalami Grand Prix Circuit', 
-    country: 'South Africa', 
-    length: '4.529 km',
-    imageUrl: '/assets/tracks/kyalami.svg'
-  },
-  { 
-    id: 'laguna_seca', 
-    name: 'Laguna Seca', 
-    country: 'USA', 
+  {
+    id: 'laguna_seca',
+    name: 'Laguna Seca',
+    country: 'USA',
     length: '3.602 km',
     imageUrl: '/assets/tracks/laguna_seca.svg'
   },
-  { 
-    id: 'cota', 
-    name: 'Circuit of the Americas', 
-    country: 'USA', 
-    length: '5.513 km',
-    imageUrl: '/assets/tracks/cota.svg'
+  {
+    id: 'suzuka',
+    name: 'Suzuka',
+    country: 'Japan',
+    length: '5.807 km',
+    imageUrl: '/assets/tracks/suzuka.svg'
   },
-  { 
-    id: 'watkins_glen', 
-    name: 'Watkins Glen', 
-    country: 'USA', 
-    length: '5.552 km',
-    imageUrl: '/assets/tracks/watkins_glen.svg'
+  {
+    id: 'kyalami',
+    name: 'Kyalami',
+    country: 'South Africa',
+    length: '4.522 km',
+    imageUrl: '/assets/tracks/kyalami.svg'
   },
-  { 
-    id: 'indianapolis', 
-    name: 'Indianapolis', 
-    country: 'USA', 
-    length: '3.925 km',
-    imageUrl: '/assets/tracks/indianapolis.svg'
-  },
-  { 
-    id: 'oulton_park', 
-    name: 'Oulton Park', 
-    country: 'UK', 
+  // British GT Pack
+  {
+    id: 'oulton_park',
+    name: 'Oulton Park',
+    country: 'UK',
     length: '4.307 km',
     imageUrl: '/assets/tracks/oulton_park.svg'
   },
-  { 
-    id: 'snetterton', 
-    name: 'Snetterton', 
-    country: 'UK', 
+  {
+    id: 'snetterton',
+    name: 'Snetterton',
+    country: 'UK',
     length: '4.779 km',
     imageUrl: '/assets/tracks/snetterton.svg'
   },
-  { 
-    id: 'donington', 
-    name: 'Donington Park', 
-    country: 'UK', 
+  {
+    id: 'donington',
+    name: 'Donington Park',
+    country: 'UK',
     length: '4.020 km',
     imageUrl: '/assets/tracks/donington.svg'
   },
-  { 
-    id: 'valencia', 
-    name: 'Valencia', 
-    country: 'Spain', 
+  // Challengers Pack
+  {
+    id: 'valencia',
+    name: 'Valencia',
+    country: 'Spain',
     length: '4.005 km',
     imageUrl: '/assets/tracks/valencia.svg'
   },
-  { 
-    id: 'red_bull_ring', 
-    name: 'Red Bull Ring', 
-    country: 'Austria', 
+  // American Track Pack
+  {
+    id: 'cota',
+    name: 'COTA',
+    country: 'USA',
+    length: '5.513 km',
+    imageUrl: '/assets/tracks/cota.svg'
+  },
+  {
+    id: 'watkins_glen',
+    name: 'Watkins Glen',
+    country: 'USA',
+    length: '5.430 km',
+    imageUrl: '/assets/tracks/watkins_glen.svg'
+  },
+  {
+    id: 'indianapolis',
+    name: 'Indianapolis',
+    country: 'USA',
+    length: '3.925 km',
+    imageUrl: '/assets/tracks/indianapolis.svg'
+  },
+  // GT2 Pack
+  {
+    id: 'red_bull_ring',
+    name: 'Red Bull Ring',
+    country: 'Austria',
     length: '4.318 km',
     imageUrl: '/assets/tracks/red_bull_ring.svg'
   },
+  // 24h Nurburgring Pack
+  {
+    id: 'nurburgring_24h',
+    name: 'Nürburgring 24h',
+    country: 'Germany',
+    length: '25.378 km',
+    imageUrl: '/assets/tracks/nurburgring_24h.svg'
+  }
 ];
 
 export const CARS: Car[] = [
-  // GT3
-  { id: 'ferrari_296_gt3', name: 'Ferrari 296 GT3', class: 'GT3', brand: 'Ferrari' },
-  { id: 'porsche_992_gt3r', name: 'Porsche 911 (992) GT3 R', class: 'GT3', brand: 'Porsche' },
-  { id: 'lamborghini_huracan_evo2', name: 'Lamborghini Huracán GT3 EVO2', class: 'GT3', brand: 'Lamborghini' },
-  { id: 'amg_gt3_evo', name: 'Mercedes-AMG GT3 Evo', class: 'GT3', brand: 'Mercedes' },
-  { id: 'bmw_m4_gt3', name: 'BMW M4 GT3', class: 'GT3', brand: 'BMW' },
-  { id: 'audi_r8_lms_evo2', name: 'Audi R8 LMS Evo II', class: 'GT3', brand: 'Audi' },
-  { id: 'mclaren_720s_evo', name: 'McLaren 720S GT3 Evo', class: 'GT3', brand: 'McLaren' },
-  { id: 'aston_martin_vantage_amr_gt3', name: 'Aston Martin V8 Vantage GT3', class: 'GT3', brand: 'Aston Martin' },
-  { id: 'honda_nsx_gt3_evo', name: 'Honda NSX GT3 Evo', class: 'GT3', brand: 'Honda' },
-  { id: 'bentley_continental_gt3_2018', name: 'Bentley Continental GT3 2018', class: 'GT3', brand: 'Bentley' },
-  { id: 'lexus_rc_f_gt3', name: 'Lexus RC F GT3', class: 'GT3', brand: 'Lexus' },
-  { id: 'nissan_gt_r_nismo_gt3_2018', name: 'Nissan GT-R Nismo GT3 2018', class: 'GT3', brand: 'Nissan' },
-  { id: 'ford_mustang_gt3', name: 'Ford Mustang GT3', class: 'GT3', brand: 'Ford' },
-  
-  // GT4
-  { id: 'alpine_a110_gt4', name: 'Alpine A110 GT4', class: 'GT4', brand: 'Alpine' },
-  { id: 'aston_martin_vantage_gt4', name: 'Aston Martin Vantage GT4', class: 'GT4', brand: 'Aston Martin' },
-  { id: 'audi_r8_lms_gt4', name: 'Audi R8 LMS GT4', class: 'GT4', brand: 'Audi' },
-  { id: 'bmw_m4_gt4', name: 'BMW M4 GT4', class: 'GT4', brand: 'BMW' },
-  { id: 'chevrolet_camaro_gt4r', name: 'Chevrolet Camaro GT4.R', class: 'GT4', brand: 'Chevrolet' },
-  { id: 'ginetta_g55_gt4', name: 'Ginetta G55 GT4', class: 'GT4', brand: 'Ginetta' },
-  { id: 'ktm_xbow_gt4', name: 'KTM X-Bow GT4', class: 'GT4', brand: 'KTM' },
-  { id: 'maserati_granturismo_mc_gt4', name: 'Maserati GranTurismo MC GT4', class: 'GT4', brand: 'Maserati' },
-  { id: 'mclaren_570s_gt4', name: 'McLaren 570S GT4', class: 'GT4', brand: 'McLaren' },
-  { id: 'mercedes_amg_gt4', name: 'Mercedes-AMG GT4', class: 'GT4', brand: 'Mercedes' },
-  { id: 'porsche_718_cayman_gt4_clubsport', name: 'Porsche 718 Cayman GT4 Clubsport', class: 'GT4', brand: 'Porsche' },
-  { id: 'toyota_gr_supra_gt4', name: 'Toyota GR Supra GT4', class: 'GT4', brand: 'Toyota' },
+    // GT3
+    { id: 'amr_v8_vantage_gt3', name: 'V8 Vantage GT3 (2019)', class: 'GT3', brand: 'Aston Martin' },
+    { id: 'audi_r8_lms_evo_ii', name: 'R8 LMS Evo II (2022)', class: 'GT3', brand: 'Audi' },
+    { id: 'bentley_continental_gt3_2018', name: 'Continental GT3 (2018)', class: 'GT3', brand: 'Bentley' },
+    { id: 'bmw_m4_gt3', name: 'M4 GT3 (2022)', class: 'GT3', brand: 'BMW' },
+    { id: 'ferrari_296_gt3', name: '296 GT3 (2023)', class: 'GT3', brand: 'Ferrari' },
+    { id: 'honda_nsx_gt3_evo', name: 'NSX GT3 Evo (2019)', class: 'GT3', brand: 'Honda' },
+    { id: 'lamborghini_huracan_gt3_evo2', name: 'Huracan GT3 Evo2 (2023)', class: 'GT3', brand: 'Lamborghini' },
+    { id: 'mclaren_720s_gt3_evo', name: '720S GT3 Evo (2023)', class: 'GT3', brand: 'McLaren' },
+    { id: 'mercedes_amg_gt3_evo', name: 'AMG GT3 Evo (2020)', class: 'GT3', brand: 'Mercedes-AMG' },
+    { id: 'porsche_992_gt3_r', name: '911 (992) GT3 R (2023)', class: 'GT3', brand: 'Porsche' },
+    
+    // GT4
+    { id: 'alpine_a110_gt4', name: 'A110 GT4 (2018)', class: 'GT4', brand: 'Alpine' },
+    { id: 'amr_v8_vantage_gt4', name: 'V8 Vantage GT4 (2018)', class: 'GT4', brand: 'Aston Martin' },
+    { id: 'audi_r8_lms_gt4', name: 'R8 LMS GT4 (2016)', class: 'GT4', brand: 'Audi' },
+    { id: 'bmw_m4_gt4', name: 'M4 GT4 (2018)', class: 'GT4', brand: 'BMW' },
+    { id: 'chevrolet_camaro_gt4r', name: 'Camaro GT4.R (2017)', class: 'GT4', brand: 'Chevrolet' },
+    { id: 'ginetta_g55_gt4', name: 'G55 GT4 (2012)', class: 'GT4', brand: 'Ginetta' },
+    { id: 'ktm_xbow_gt4', name: 'X-Bow GT4 (2016)', class: 'GT4', brand: 'KTM' },
+    { id: 'maserati_mc_gt4', name: 'MC GT4 (2016)', class: 'GT4', brand: 'Maserati' },
+    { id: 'mclaren_570s_gt4', name: '570S GT4 (2016)', class: 'GT4', brand: 'McLaren' },
+    { id: 'mercedes_amg_gt4', name: 'AMG GT4 (2016)', class: 'GT4', brand: 'Mercedes-AMG' },
+    { id: 'porsche_718_cayman_gt4_mr', name: '718 Cayman GT4 MR (2019)', class: 'GT4', brand: 'Porsche' },
+    { id: 'toyota_gr_supra_gt4', name: 'GR Supra GT4 (2020)', class: 'GT4', brand: 'Toyota' },
 
-  // Single Make
-  { id: 'porsche_992_gt3_cup', name: 'Porsche 911 (992) GT3 Cup', class: 'CUP', brand: 'Porsche' },
-  { id: 'ferrari_488_challenge_evo', name: 'Ferrari 488 Challenge Evo', class: 'CUP', brand: 'Ferrari' },
-  { id: 'lamborghini_huracan_super_trofeo_evo2', name: 'Lamborghini Huracán Super Trofeo EVO2', class: 'CUP', brand: 'Lamborghini' },
-  { id: 'bmw_m2_cs_racing', name: 'BMW M2 CS Racing', class: 'TCX', brand: 'BMW' },
+    // Others
+    { id: 'porsche_992_gt3_cup', name: '911 (992) GT3 Cup (2021)', class: 'CUP', brand: 'Porsche' },
+    { id: 'lamborghini_huracan_st_evo2', name: 'Huracan ST Evo2 (2021)', class: 'CUP', brand: 'Lamborghini' },
+    { id: 'ferrari_488_challenge_evo', name: '488 Challenge Evo (2020)', class: 'CUP', brand: 'Ferrari' },
+    { id: 'audi_r8_lms_gt2', name: 'R8 LMS GT2 (2019)', class: 'GT2', brand: 'Audi' },
+    { id: 'ktm_xbow_gt2', name: 'X-Bow GT2 (2020)', class: 'GT2', brand: 'KTM' },
+    { id: 'maserati_mc20_gt2', name: 'MC20 GT2 (2023)', class: 'GT2', brand: 'Maserati' },
+    { id: 'mercedes_amg_gt2', name: 'AMG GT2 (2022)', class: 'GT2', brand: 'Mercedes-AMG' },
+    { id: 'porsche_911_gt2_rs_cs_evo', name: '911 GT2 RS CS Evo (2019)', class: 'GT2', brand: 'Porsche' },
+    { id: 'bmw_m2_cs_racing', name: 'M2 CS Racing (2020)', class: 'TCX', brand: 'BMW' },
 ];
