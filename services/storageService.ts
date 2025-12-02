@@ -74,17 +74,19 @@ export const sendVerificationCode = async (email: string): Promise<string> => {
 
   // Real Supabase Email OTP
   if (USE_DB && supabase) {
-    // We set shouldCreateUser: true so Supabase handles "Sign Up" via OTP automatically.
-    // If you disabled "Confirm Email" in Supabase dashboard, this sends the OTP directly.
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: true, 
+        shouldCreateUser: false, // We handle user creation logic manually to check usernames
       }
     });
 
     if (error) {
-      throw new Error(error.message);
+      // If error is "User not found" (meaning they need to register), we try again with CreateUser true
+      // or we just allow it and let the Verify step handle it. 
+      // For simplicity in this flow:
+      const { error: retryError } = await supabase.auth.signInWithOtp({ email });
+      if (retryError) throw new Error(retryError.message);
     }
     
     return "SENT_VIA_EMAIL"; // We don't return the code, Supabase handles it securely
