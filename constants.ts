@@ -188,19 +188,51 @@ export const TRACKS: Track[] = [
 ];
 
 export const CARS: Car[] = [
-    // GT3
+    // --- GT3 CLASS (Current & New) ---
     { id: 'amr_v8_vantage_gt3', name: 'V8 Vantage GT3 (2019)', class: 'GT3', brand: 'Aston Martin' },
     { id: 'audi_r8_lms_evo_ii', name: 'R8 LMS Evo II (2022)', class: 'GT3', brand: 'Audi' },
-    { id: 'bentley_continental_gt3_2018', name: 'Continental GT3 (2018)', class: 'GT3', brand: 'Bentley' },
     { id: 'bmw_m4_gt3', name: 'M4 GT3 (2022)', class: 'GT3', brand: 'BMW' },
     { id: 'ferrari_296_gt3', name: '296 GT3 (2023)', class: 'GT3', brand: 'Ferrari' },
+    { id: 'ford_mustang_gt3', name: 'Mustang GT3 (2024)', class: 'GT3', brand: 'Ford' },
     { id: 'honda_nsx_gt3_evo', name: 'NSX GT3 Evo (2019)', class: 'GT3', brand: 'Honda' },
     { id: 'lamborghini_huracan_gt3_evo2', name: 'Huracan GT3 Evo2 (2023)', class: 'GT3', brand: 'Lamborghini' },
     { id: 'mclaren_720s_gt3_evo', name: '720S GT3 Evo (2023)', class: 'GT3', brand: 'McLaren' },
     { id: 'mercedes_amg_gt3_evo', name: 'AMG GT3 Evo (2020)', class: 'GT3', brand: 'Mercedes-AMG' },
     { id: 'porsche_992_gt3_r', name: '911 (992) GT3 R (2023)', class: 'GT3', brand: 'Porsche' },
-    
-    // GT4
+    { id: 'bentley_continental_gt3_2018', name: 'Continental GT3 (2018)', class: 'GT3', brand: 'Bentley' },
+    { id: 'nissan_gt_r_nismo_gt3_2018', name: 'GT-R Nismo GT3 (2018)', class: 'GT3', brand: 'Nissan' },
+
+    // --- GT3 CLASS (Older Generations) ---
+    { id: 'amr_v12_vantage_gt3', name: 'V12 Vantage GT3 (2013)', class: 'GT3', brand: 'Aston Martin' },
+    { id: 'audi_r8_lms_evo', name: 'R8 LMS Evo (2019)', class: 'GT3', brand: 'Audi' },
+    { id: 'audi_r8_lms', name: 'R8 LMS (2015)', class: 'GT3', brand: 'Audi' },
+    { id: 'bentley_continental_gt3_2015', name: 'Continental GT3 (2015)', class: 'GT3', brand: 'Bentley' },
+    { id: 'bmw_m6_gt3', name: 'M6 GT3 (2017)', class: 'GT3', brand: 'BMW' },
+    { id: 'bmw_z4_gt3', name: 'Z4 GT3 (2011)', class: 'GT3', brand: 'BMW' },
+    { id: 'ferrari_488_gt3_evo', name: '488 GT3 Evo (2020)', class: 'GT3', brand: 'Ferrari' },
+    { id: 'ferrari_488_gt3', name: '488 GT3 (2018)', class: 'GT3', brand: 'Ferrari' },
+    { id: 'honda_nsx_gt3', name: 'NSX GT3 (2017)', class: 'GT3', brand: 'Honda' },
+    { id: 'jaguar_g3', name: 'G3 (2012)', class: 'GT3', brand: 'Jaguar' },
+    { id: 'lamborghini_huracan_gt3_evo', name: 'Huracan GT3 Evo (2019)', class: 'GT3', brand: 'Lamborghini' },
+    { id: 'lamborghini_huracan_gt3', name: 'Huracan GT3 (2015)', class: 'GT3', brand: 'Lamborghini' },
+    { id: 'lexus_rc_f_gt3', name: 'RC F GT3 (2016)', class: 'GT3', brand: 'Lexus' },
+    { id: 'mclaren_720s_gt3', name: '720S GT3 (2019)', class: 'GT3', brand: 'McLaren' },
+    { id: 'mclaren_650s_gt3', name: '650S GT3 (2015)', class: 'GT3', brand: 'McLaren' },
+    { id: 'mercedes_amg_gt3', name: 'AMG GT3 (2015)', class: 'GT3', brand: 'Mercedes-AMG' },
+    { id: 'nissan_gt_r_nismo_gt3_2015', name: 'GT-R Nismo GT3 (2015)', class: 'GT3', brand: 'Nissan' },
+    { id: 'porsche_991ii_gt3_r', name: '911 (991II) GT3 R (2019)', class: 'GT3', brand: 'Porsche' },
+    { id: 'porsche_991_gt3_r', name: '911 (991) GT3 R (2018)', class: 'GT3', brand: 'Porsche' },
+    { id: 'reiter_engineering_r_ex_gt3', name: 'R-EX GT3 (2017)', class: 'GT3', brand: 'Reiter Engineering' },
+
+    // --- GT2 CLASS ---
+    { id: 'audi_r8_lms_gt2', name: 'R8 LMS GT2 (2019)', class: 'GT2', brand: 'Audi' },
+    { id: 'ktm_xbow_gt2', name: 'X-Bow GT2 (2020)', class: 'GT2', brand: 'KTM' },
+    { id: 'maserati_mc20_gt2', name: 'MC20 GT2 (2023)', class: 'GT2', brand: 'Maserati' },
+    { id: 'mercedes_amg_gt2', name: 'AMG GT2 (2022)', class: 'GT2', brand: 'Mercedes-AMG' },
+    { id: 'porsche_911_gt2_rs_cs_evo', name: '911 GT2 RS CS Evo (2019)', class: 'GT2', brand: 'Porsche' },
+    { id: 'porsche_935', name: '935 (2019)', class: 'GT2', brand: 'Porsche' },
+
+    // --- GT4 CLASS ---
     { id: 'alpine_a110_gt4', name: 'A110 GT4 (2018)', class: 'GT4', brand: 'Alpine' },
     { id: 'amr_v8_vantage_gt4', name: 'V8 Vantage GT4 (2018)', class: 'GT4', brand: 'Aston Martin' },
     { id: 'audi_r8_lms_gt4', name: 'R8 LMS GT4 (2016)', class: 'GT4', brand: 'Audi' },
@@ -214,14 +246,11 @@ export const CARS: Car[] = [
     { id: 'porsche_718_cayman_gt4_mr', name: '718 Cayman GT4 MR (2019)', class: 'GT4', brand: 'Porsche' },
     { id: 'toyota_gr_supra_gt4', name: 'GR Supra GT4 (2020)', class: 'GT4', brand: 'Toyota' },
 
-    // Others
+    // --- CUP / TCX / GTC CLASSES ---
     { id: 'porsche_992_gt3_cup', name: '911 (992) GT3 Cup (2021)', class: 'CUP', brand: 'Porsche' },
+    { id: 'porsche_991ii_gt3_cup', name: '911 (991II) GT3 Cup (2017)', class: 'CUP', brand: 'Porsche' },
     { id: 'lamborghini_huracan_st_evo2', name: 'Huracan ST Evo2 (2021)', class: 'CUP', brand: 'Lamborghini' },
+    { id: 'lamborghini_huracan_st', name: 'Huracan Super Trofeo (2015)', class: 'CUP', brand: 'Lamborghini' },
     { id: 'ferrari_488_challenge_evo', name: '488 Challenge Evo (2020)', class: 'CUP', brand: 'Ferrari' },
-    { id: 'audi_r8_lms_gt2', name: 'R8 LMS GT2 (2019)', class: 'GT2', brand: 'Audi' },
-    { id: 'ktm_xbow_gt2', name: 'X-Bow GT2 (2020)', class: 'GT2', brand: 'KTM' },
-    { id: 'maserati_mc20_gt2', name: 'MC20 GT2 (2023)', class: 'GT2', brand: 'Maserati' },
-    { id: 'mercedes_amg_gt2', name: 'AMG GT2 (2022)', class: 'GT2', brand: 'Mercedes-AMG' },
-    { id: 'porsche_911_gt2_rs_cs_evo', name: '911 GT2 RS CS Evo (2019)', class: 'GT2', brand: 'Porsche' },
     { id: 'bmw_m2_cs_racing', name: 'M2 CS Racing (2020)', class: 'TCX', brand: 'BMW' },
 ];
