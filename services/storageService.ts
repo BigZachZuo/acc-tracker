@@ -13,8 +13,9 @@ const USE_DB = !!(SUPABASE_URL && SUPABASE_KEY);
 const supabase = USE_DB ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 // Admin Credentials
+// We keep the email to identify WHO gets admin rights, but we removed the secret code.
+// The admin will now log in via Email OTP just like everyone else.
 const ADMIN_EMAIL = 'zuoyi186@163.com';
-const ADMIN_SECRET_CODE = 'Zuo!2839601618';
 
 // Local Storage Keys (Fallback)
 const LS_USERS_KEY = 'acc_tracker_users';
@@ -66,27 +67,18 @@ const mapUserFromDb = (dbUser: any): User => ({
 
 // 1. SEND OTP
 export const sendVerificationCode = async (email: string): Promise<string> => {
-  // Admin Backdoor: Immediate return of secret code, NO email sent.
-  if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-    console.log("Admin login attempt detected.");
-    return ADMIN_SECRET_CODE; 
-  }
-
   // Real Supabase Email OTP
   if (USE_DB && supabase) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: false, // We handle user creation logic manually to check usernames
+        shouldCreateUser: true, // Allow direct sign-up/login flow
       }
     });
 
     if (error) {
-      // If error is "User not found" (meaning they need to register), we try again with CreateUser true
-      // or we just allow it and let the Verify step handle it. 
-      // For simplicity in this flow:
-      const { error: retryError } = await supabase.auth.signInWithOtp({ email });
-      if (retryError) throw new Error(retryError.message);
+      console.error("Supabase OTP Error:", error);
+      throw new Error(error.message);
     }
     
     return "SENT_VIA_EMAIL"; // We don't return the code, Supabase handles it securely
@@ -102,11 +94,6 @@ export const sendVerificationCode = async (email: string): Promise<string> => {
 
 // 2. VERIFY OTP (New Helper)
 export const verifyUserOtp = async (email: string, token: string): Promise<boolean> => {
-  // Admin Backdoor
-  if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-    return token === ADMIN_SECRET_CODE;
-  }
-
   if (USE_DB && supabase) {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
@@ -146,6 +133,7 @@ export const registerUser = async (email: string, username: string): Promise<{ s
     const { data: existingUser } = await supabase.from('users').select('*').eq('username', username).maybeSingle();
     if (existingUser) return { success: false, message: '用户名已被占用' };
 
+    // Automatic Admin assignment based on email address
     const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
     // Upsert into public.users table (Our app's user profile)
