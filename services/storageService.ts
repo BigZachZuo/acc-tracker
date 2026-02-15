@@ -42,7 +42,10 @@ const mapLapFromDb = (dbLap: any): LapTime => {
     milliseconds: dbLap.milliseconds ?? milliseconds,
     totalMilliseconds: total,
     timestamp: dbLap.timestamp,
-    conditions: dbLap.conditions as 'Dry' | 'Wet'
+    conditions: dbLap.conditions as 'Dry' | 'Wet',
+    trackTemp: dbLap.track_temp,
+    inputDevice: dbLap.input_device as 'Keyboard' | 'Gamepad' | 'Wheel' | undefined,
+    isVerified: dbLap.is_verified
   };
 };
 
@@ -53,7 +56,10 @@ const mapLapToDb = (lap: LapTime) => ({
   car_id: lap.carId,
   total_milliseconds: lap.totalMilliseconds,
   timestamp: lap.timestamp,
-  conditions: lap.conditions
+  conditions: lap.conditions,
+  track_temp: lap.trackTemp,
+  input_device: lap.inputDevice,
+  is_verified: lap.isVerified
 });
 
 const mapUserFromDb = (dbUser: any): User => ({
@@ -93,16 +99,37 @@ export const sendVerificationCode = async (email: string): Promise<string> => {
 };
 
 // 2. VERIFY OTP (New Helper)
-export const verifyUserOtp = async (email: string, token: string): Promise<boolean> => {
+export const verifyUserOtp = async (email: string, token: string, isSignup: boolean = false): Promise<boolean> => {
   if (USE_DB && supabase) {
+    // Determine expected type based on context
+    // 'signup' for new users (registration), 'magiclink' for existing users (login)
+    // Note: 'email' type is usually for email change, not login/signup.
+    const primaryType: 'signup' | 'magiclink' = isSignup ? 'signup' : 'magiclink';
+
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
-      type: 'email',
+      type: primaryType,
     });
 
-    if (error || !data.session) {
-      console.error("OTP Error:", error);
+    if (!error && data.session) {
+      return true;
+    }
+
+    // Fallback: State mismatch handling.
+    // Sometimes the UI thinks it's a Signup (user not in public DB), but Auth DB has them (so sends magiclink).
+    // Or UI thinks Login (user in public DB), but Auth session is weird/missing (sends signup?).
+    console.warn(`Primary OTP check (${primaryType}) failed. Retrying with alternate type...`);
+    
+    const altType: 'signup' | 'magiclink' = primaryType === 'signup' ? 'magiclink' : 'signup';
+    const retry = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: altType,
+    });
+
+    if (retry.error || !retry.data.session) {
+      console.error("OTP Error (Final):", error?.message, retry.error?.message);
       return false;
     }
     return true;
@@ -261,6 +288,51 @@ export const fetchLapTimes = async (trackId?: string): Promise<LapTime[]> => {
   }
 };
 
+// Add update capability
+export const updateLapTime = async (lap: LapTime): Promise<{ success: boolean, message: string }> => {
+  if (USE_DB && supabase) {
+    const payload = mapLapToDb(lap);
+    const { error } = await supabase
+      .from('lap_times')
+      .update(payload)
+      .eq('id', lap.id);
+
+    if (error) {
+      console.error("Update Error:", error);
+      
+      // Auto-downgrade: If verified column missing, retry without it
+      if (error.message.includes('is_verified') || error.code === '42703' || error.message.includes('column "is_verified" of relation "lap_times" does not exist')) {
+        console.warn("DB Schema mismatch: Retrying update without is_verified column...");
+        const { is_verified, ...safePayload } = payload as any;
+        
+        const retry = await supabase.from('lap_times').update(safePayload).eq('id', lap.id);
+        if (retry.error) {
+           return { success: false, message: "更新失败: " + retry.error.message };
+        }
+        return { success: true, message: "记录已更新 (验证状态未保存)" };
+      }
+
+      if (error.message.includes('row-level security')) {
+        return { success: false, message: "数据库错误: 权限被拒绝。" };
+      }
+      return { success: false, message: "更新失败: " + error.message };
+    }
+    return { success: true, message: "记录已更新" };
+
+  } else {
+    // Local Storage Fallback
+    const times: LapTime[] = JSON.parse(localStorage.getItem(LS_LAP_TIMES_KEY) || '[]');
+    const index = times.findIndex(t => t.id === lap.id);
+    
+    if (index !== -1) {
+      times[index] = lap;
+      localStorage.setItem(LS_LAP_TIMES_KEY, JSON.stringify(times));
+      return { success: true, message: "记录已更新" };
+    }
+    return { success: false, message: "记录未找到" };
+  }
+};
+
 export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean, message: string }> => {
   if (USE_DB && supabase) {
     const { data: existingRecords } = await supabase
@@ -272,14 +344,25 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
     
     const existing = existingRecords && existingRecords[0];
 
+    const payload = mapLapToDb(newLap);
+
     if (existing) {
       if (newLap.totalMilliseconds < existing.total_milliseconds) {
         const { error } = await supabase
           .from('lap_times')
-          .update(mapLapToDb(newLap))
+          .update(payload)
           .eq('id', existing.id);
         
         if (error) {
+           // Auto-downgrade retry
+           if (error.message.includes('is_verified') || error.code === '42703' || error.message.includes('column "is_verified" of relation "lap_times" does not exist')) {
+              console.warn("DB Schema mismatch: Retrying update without is_verified column...");
+              const { is_verified, ...safePayload } = payload as any;
+              const retry = await supabase.from('lap_times').update(safePayload).eq('id', existing.id);
+              if (retry.error) return { success: false, message: "数据库错误: " + retry.error.message };
+              return { success: true, message: "新的个人最佳成绩！记录已更新 (验证状态未保存)" };
+           }
+
            if (error.message.includes('row-level security')) {
               return { success: false, message: "数据库错误: 权限被拒绝，请启用RLS策略。" };
            }
@@ -292,9 +375,18 @@ export const submitLapTime = async (newLap: LapTime): Promise<{ success: boolean
     } else {
       const { error } = await supabase
         .from('lap_times')
-        .insert(mapLapToDb(newLap));
+        .insert(payload);
       
       if (error) {
+         // Auto-downgrade retry
+         if (error.message.includes('is_verified') || error.code === '42703' || error.message.includes('column "is_verified" of relation "lap_times" does not exist')) {
+            console.warn("DB Schema mismatch: Retrying insert without is_verified column...");
+            const { is_verified, ...safePayload } = payload as any;
+            const retry = await supabase.from('lap_times').insert(safePayload);
+            if (retry.error) return { success: false, message: "数据库错误: " + retry.error.message };
+            return { success: true, message: "圈速记录成功 (验证状态未保存)" };
+         }
+
          if (error.message.includes('row-level security')) {
             return { success: false, message: "数据库错误: 权限被拒绝，请启用RLS策略。" };
          }
@@ -359,7 +451,7 @@ export const seedMockData = async () => {
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
   const mockTimes: LapTime[] = [
-    { id: generateId(), username: 'J.Baldwin', trackId: 'monza', carId: 'mclaren_720s_evo', minutes: 1, seconds: 46, milliseconds: 320, totalMilliseconds: 106320, timestamp: new Date().toISOString(), conditions: 'Dry' },
+    { id: generateId(), username: 'J.Baldwin', trackId: 'monza', carId: 'mclaren_720s_evo', minutes: 1, seconds: 46, milliseconds: 320, totalMilliseconds: 106320, timestamp: new Date().toISOString(), conditions: 'Dry', trackTemp: 24, inputDevice: 'Wheel', isVerified: true },
   ];
   localStorage.setItem(LS_LAP_TIMES_KEY, JSON.stringify(mockTimes));
 };

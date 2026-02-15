@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Track, ViewState } from './types';
+import { User, Track, ViewState, LapTime } from './types';
 import { TRACKS } from './constants';
 import { getCurrentUser, logoutUser, seedMockData } from './services/storageService';
 import Navbar from './components/Navbar';
@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [view, setView] = useState<ViewState>(ViewState.LEADERBOARD);
   const [selectedTrack, setSelectedTrack] = useState<Track>(TRACKS[0]); // Default to Monza
+  const [editingLap, setEditingLap] = useState<LapTime | null>(null);
 
   useEffect(() => {
     // 1. Seed Mock Data (Async, fire and forget)
@@ -38,11 +39,17 @@ const App: React.FC = () => {
   };
 
   const handleLogLapClick = () => {
+    setEditingLap(null); // Clear editing state for new lap
     if (user) {
       setView(ViewState.SUBMIT);
     } else {
       setView(ViewState.LOGIN);
     }
+  };
+
+  const handleEditLap = (lap: LapTime) => {
+    setEditingLap(lap);
+    setView(ViewState.SUBMIT);
   };
 
   const renderContent = () => {
@@ -74,8 +81,15 @@ const App: React.FC = () => {
         <SubmitLapForm 
           track={selectedTrack} 
           user={user}
-          onSuccess={() => setView(ViewState.LEADERBOARD)}
-          onCancel={() => setView(ViewState.LEADERBOARD)}
+          initialData={editingLap}
+          onSuccess={() => {
+             setView(ViewState.LEADERBOARD);
+             setEditingLap(null);
+          }}
+          onCancel={() => {
+             setView(ViewState.LEADERBOARD);
+             setEditingLap(null);
+          }}
         />
       );
     }
@@ -115,7 +129,11 @@ const App: React.FC = () => {
           </Button>
         </div>
 
-        <Leaderboard selectedTrack={selectedTrack} currentUser={user?.username} />
+        <Leaderboard 
+          selectedTrack={selectedTrack} 
+          currentUser={user?.username} 
+          onEdit={handleEditLap} 
+        />
       </div>
     );
   };

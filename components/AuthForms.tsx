@@ -82,11 +82,12 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
        isValid = otpInput === generatedOtp;
     } else {
        // Real Supabase verification
-       isValid = await verifyUserOtp(email, otpInput);
+       // Pass isRegistering to determine if we should verify as 'signup' or 'magiclink'
+       isValid = await verifyUserOtp(email, otpInput, isRegistering);
     }
 
     if (!isValid) {
-      setError('验证码无效，请重试。');
+      setError('验证码无效或已过期，请重试。');
       setIsLoading(false);
       return;
     }
@@ -119,6 +120,21 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
 
     if (!username.trim()) {
       setError('请输入用户名。');
+      setIsLoading(false);
+      return;
+    }
+
+    // New validation: Allow Alphanumeric + Underscore + Chinese characters
+    const usernameRegex = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+    if (!usernameRegex.test(username)) {
+      setError('用户名只能包含字母、数字、中文和下划线，不能包含空格或特殊字符。');
+      setIsLoading(false);
+      return;
+    }
+
+    // Adjusted length check for Chinese names (e.g. "王伟" is 2 chars)
+    if (username.length < 2 || username.length > 20) {
+      setError('用户名长度需在 2 到 20 个字符之间。');
       setIsLoading(false);
       return;
     }
@@ -218,7 +234,11 @@ const AuthForms: React.FC<AuthFormsProps> = ({ onLogin, toggleMode, isRegisterin
             onChange={(e) => setUsername(e.target.value)}
             autoFocus
             disabled={isLoading}
+            autoComplete="username"
           />
+          <p className="text-xs text-slate-500 mt-1">
+            * 支持中文、字母、数字和下划线
+          </p>
           {error && <div className="text-red-500 text-sm text-center font-bold">{error}</div>}
           <Button type="submit" className="w-full py-3 text-lg" isLoading={isLoading}>
             完成注册

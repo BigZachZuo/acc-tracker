@@ -6,6 +6,8 @@ export interface User {
   joinedAt: string;
 }
 
+export type InputDevice = 'Keyboard' | 'Gamepad' | 'Wheel';
+
 export interface LapTime {
   id: string;
   username: string;
@@ -18,6 +20,9 @@ export interface LapTime {
   totalMilliseconds: number;
   timestamp: string;
   conditions: 'Dry' | 'Wet';
+  trackTemp?: number;
+  inputDevice?: InputDevice;
+  isVerified?: boolean;
 }
 
 export interface Track {
