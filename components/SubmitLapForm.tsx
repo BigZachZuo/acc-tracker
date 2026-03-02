@@ -46,8 +46,8 @@ const compressImage = (file: File): Promise<string> => {
         const ctx = canvas.getContext('2d');
         if (ctx) {
             ctx.drawImage(img, 0, 0, width, height);
-            // Compress to JPEG 80% quality
-            resolve(canvas.toDataURL('image/jpeg', 0.8));
+            // Compress to JPEG 95% quality for better OCR
+            resolve(canvas.toDataURL('image/jpeg', 0.95));
         } else {
             reject(new Error("Canvas context failed"));
         }
@@ -130,23 +130,31 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track: initialTrack, user
         
         Tasks:
         1. **Fastest Lap**: Identify the FASTEST (lowest) valid lap time.
-           - CRITICAL: Do NOT just pick the first time you see. You MUST scan the entire list.
-           - Look for columns labeled "Best", "Fastest", or "Lap".
+           - CRITICAL: Scan the ENTIRE image. Do NOT stop at the first row.
+           - SCENARIO A (List/Leaderboard): The list is NOT always sorted. You MUST compare ALL valid times found.
+           - SCENARIO B (Single Lap/HUD): If only one valid lap time is visible, use that time.
+           - SCENARIO C (Pattern Match): Look for "M:SS.mmm" (e.g. "1:45.123").
+           - SCENARIO E (Driver Stats): On "Driver Stats" pages, the rightmost column contains lap times. Check EVERY row.
            - List ALL valid times found in the \`allLapTimesFound\` field.
-           - Compare ALL valid times found in the image.
-           - Select the SMALLEST numerical value (e.g. 2:14.000 is faster than 2:15.000).
-           - Ignore invalid laps (red text, or marked with 'Invalid', 'C', '*').
-           - STRICT FORMAT: "Minutes:Seconds.Milliseconds" (e.g., 2:24.123).
+           - Compare them numerically and select the ABSOLUTE LOWEST value.
+           - Ignore invalid laps (red text, '--:--', or marked with 'Invalid', 'C', '*').
+           - STRICT FORMAT: "Minutes:Seconds.Milliseconds" (e.g., 2:24.123 or 01:31.110).
            - The number BEFORE the colon (:) is MINUTES.
            - The number AFTER the colon (:) is SECONDS.
            - The number AFTER the dot (.) is MILLISECONDS (must be 3 digits).
            - WARNING: Do NOT swap Minutes and Seconds. 
-             - Correct: "2:27.495" -> Minutes=2, Seconds=27, Milliseconds=495.
-           - Pay close attention to the milliseconds part (the 3 digits after the dot).
-        2. **Car**: Identify the Car Model specifically used for that fastest lap. Match it to the provided Car List.
+           - MILLISECONDS: Return as a STRING to preserve leading zeros (e.g. "097" for .097).
+        2. **Car**: Identify the Car Model for the FASTEST lap.
            - Ensure the car matches the row where the fastest lap was found.
-        3. **Track**: Identify the Track Name from the UI/Environment and match to the provided Track List.
+        3. **Track**: Identify the Track Name. Match to the provided Track List.
+           - Look in UI headers, loading screens, or track map overlays.
         4. **Conditions**: Identify Track Temperature (e.g., "Track: 24°C").
+
+        VALIDATION RULES:
+        - If a valid lap time is found, set "isValid" to true.
+        - If Car or Track cannot be identified (e.g. HUD doesn't show them), return null for those fields but KEEP "isValid" as true.
+        - Only return "isValid": false if NO valid lap time can be found or the image is clearly not from ACC.
+        - REASONING: You MUST populate the "reasoning" field. Explain which times you saw and why you picked the winner.
 
         Lists:
         [CARS]
@@ -178,11 +186,12 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track: initialTrack, user
                 type: Type.OBJECT,
                 properties: {
                   isValid: { type: Type.BOOLEAN, description: "True if image contains valid ACC lap time data" },
+                  reasoning: { type: Type.STRING, description: "Explain step-by-step how the fastest lap was selected. List the times compared." },
                   allLapTimesFound: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of all valid lap times found in the image (e.g. ['2:15.123', '2:14.567'])" },
                   rawLapTime: { type: Type.STRING, description: "The exact string of the fastest lap time found (e.g. '2:14.567')" },
                   minutes: { type: Type.INTEGER },
                   seconds: { type: Type.INTEGER },
-                  milliseconds: { type: Type.INTEGER, description: "The milliseconds part (0-999). E.g. 567 for .567s" },
+                  milliseconds: { type: Type.STRING, description: "The milliseconds part as a STRING (e.g. '097', '123'). Must be 3 digits." },
                   carId: { type: Type.STRING, enum: carIds, description: "ID from Car List" },
                   trackId: { type: Type.STRING, enum: trackIds, description: "ID from Track List" },
                   trackTemp: { type: Type.INTEGER },
@@ -225,7 +234,7 @@ const SubmitLapForm: React.FC<SubmitLapFormProps> = ({ track: initialTrack, user
         
         // CHECK VALIDITY
         if (!data.isValid) {
-            setError("识别失败：请上传包含 赛道、车辆 和 圈速数据 的 ACC 游戏截图 (如统计数据页、结算页或排行榜)。");
+            setError("识别失败：无法从图片中识别出有效的圈速数据。请确保截图清晰包含圈速信息 (如HUD、结算页或排行榜)。");
             setIsVerified(false);
             return;
         }
